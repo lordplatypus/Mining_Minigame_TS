@@ -4,6 +4,8 @@ import { Vector } from "../Vector";
 import { Calculations } from "../Calculations";
 import { Dirt } from "./Dirt";
 
+import { ParticleManager } from "../Particles/ParticleManager";
+
 class Player extends Gameobject
 {
     private scene_: GameScene;
@@ -14,6 +16,8 @@ class Player extends Gameobject
     private calcs_: Calculations = new Calculations();
 
     private canvas_: HTMLCanvasElement | null;
+
+    private pm_: ParticleManager;
 
     constructor(scene: GameScene, name: string, tag: string, ID: number, position: Vector, size: Vector, gridSize: number, rows: number, columns: number)
     {
@@ -36,6 +40,9 @@ class Player extends Gameobject
             this.canvas_.addEventListener("mousedown", this.Click);
             //console.log("not mobile");
         }
+
+        //TEST
+        this.pm_ = new ParticleManager(this.scene_);
     }
 
     public Update(delta_time: number) 
@@ -70,10 +77,9 @@ class Player extends Gameobject
         mousePosition.x = event.clientX - rectangle.left;
         mousePosition.y = event.clientY - rectangle.top;
 
-        if (mousePosition.x >= 0 && mousePosition.x <= this.gridSize_ * this.columns_ &&
-            mousePosition.y >= this.gridSize_ * 2 && mousePosition.y <= this.gridSize_ * this.rows_ + this.gridSize_ * 2)
+        if (mousePosition.x >= 0 && mousePosition.x <= this.gridSize_ * (this.columns_ - 2) &&
+            mousePosition.y >= this.gridSize_ * 2 && mousePosition.y <= this.gridSize_ * this.rows_)
         {//clicked within the game field
-            mousePosition.y -= (this.gridSize_ * 2);
             var localPosition : Vector = this.calcs_.ConvertWorldToLocal(mousePosition, this.gridSize_);
             if (localPosition === null) return;
             var ID : number = this.calcs_.ConvertLocalToID(localPosition, this.rows_, this.columns_);
@@ -83,6 +89,7 @@ class Player extends Gameobject
             if (dirt !== null) dirt.LowerLevel();
     
             this.scene_.TurnUpdate();
+            this.pm_.Debris(mousePosition);
         }
         else
         {//clicked outside game field

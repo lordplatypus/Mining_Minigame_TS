@@ -41,8 +41,7 @@ class Coin extends Gameobject
     {
         if (this.done_) return;
 
-        //ConvertWorldToLocal expects the "grid" to start at (0,0), thus "- (this.gridSize_ * 2)" is needed
-        var localPosition : Vector = this.calcs_.ConvertWorldToLocal(new Vector(this.position_.x, this.position_.y - (this.gridSize_ * 2)), this.gridSize_);
+        var localPosition : Vector = this.calcs_.ConvertWorldToLocal(new Vector(this.position_.x, this.position_.y), this.gridSize_);
         if (localPosition === null) return;
         var ID : number = this.calcs_.ConvertLocalToID(localPosition, this.rows_, this.columns_);
         if (ID === null) return;

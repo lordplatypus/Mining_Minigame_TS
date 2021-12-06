@@ -1,7 +1,8 @@
 import { Scene } from "./Scene";
 import { Game } from "../Game";
-import { GameobjectManager } from "../GameObject/GameobjectManager";
+import { Calculations } from "../Calculations";
 import { Vector } from "../Vector";
+import { GameobjectManager } from "../GameObject/GameobjectManager";
 import { Gameobject } from "../GameObject/Gameobject";
 //Gameobjects
 import { Text } from "../GameObject/Text";
@@ -11,6 +12,7 @@ import { Dirt } from "../GameObject/Dirt";
 import { Player } from "../GameObject/Player";
 import { Coin } from "../GameObject/Coin";
 import { TurnCounter } from "../GameObject/TurnCounter";
+import { RightPanel } from "../GameObject/RightPanel";
 //Butons
 import { ButtonManager } from "../Button/ButtonManager";
 import { Transition_Button } from "../Button/Transition_Button";
@@ -18,9 +20,9 @@ import { Transition_Button } from "../Button/Transition_Button";
 class GameScene implements Scene
 {
     private game_: Game;
+    private calcs_: Calculations;
     public gom_: GameobjectManager;
     public bm_: ButtonManager;
-
     private canvas_: HTMLCanvasElement | null;
 
     private columns_: number; //number or columns (easier to visualize columns and rows outside Vector)
@@ -32,33 +34,20 @@ class GameScene implements Scene
     {
         //defaults, just to initialize
         this.game_ = game;
+        this.calcs_ = new Calculations();
         this.gom_ = new GameobjectManager();
         this.bm_ = new ButtonManager();
-        this.columns_ = 10;
-        this.rows_ = 10;
+        const columns = this.game_.GetStats().GetStat("Columns");
+        this.columns_ = columns !== undefined ? columns + 2 : 0;
+        const rows = this.game_.GetStats().GetStat("Rows");
+        this.rows_ = rows !== undefined ? rows + 2 : 0;
         this.gridSize_ = 32;
         this.canvasSize_ = new Vector(this.columns_ * this.gridSize_, this.rows_ * this.gridSize_);
 
         //Canvas
         this.canvas_ = <HTMLCanvasElement>document.getElementById("main_canvas");
-        // if (this.canvas_ !== null) 
-        // {
-        //     const isMobile: boolean = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        //     if (isMobile)
-        //     {
-        //         //this.canvas_.addEventListener("touchstart", TouchStart, false);
-        //         //this.canvas_.addEventListener("touchmove", TouchMove, false);
-        //         this.canvas_.addEventListener("touchend", event => this.Touch(event), false);
-        //         console.log("mobile");
-        //     }
-        //     else 
-        //     {
-        //         this.canvas_.addEventListener("mousedown", event => this.Click(event));
-        //         console.log("not mobile");
-        //     }
-        // }
-        this.canvas_.width = this.canvasSize_.x;
-        this.canvas_.height = this.canvasSize_.y;
+        // this.canvas_.width = this.canvasSize_.x;
+        // this.canvas_.height = this.canvasSize_.y;
     }
 
     public Init() 
@@ -66,17 +55,11 @@ class GameScene implements Scene
         this.bm_.Init();
 
         //scale box size depending on # of columns/rows and size of the browser window
-        if (this.columns_ > this.rows_) this.gridSize_ = Math.floor(window.innerWidth / (this.columns_ + 2));
-        else this.gridSize_ = Math.floor(window.innerHeight / (this.rows_ + 2));
-
-
-//TEST
-var spacer: number = this.gridSize_ * 2;
-//TEST
-
+        if (this.columns_ > this.rows_) this.gridSize_ = Math.floor(window.innerWidth / this.columns_);
+        else this.gridSize_ = Math.floor(window.innerHeight / this.rows_);
 
         //set the cavas size to fit boxes
-        this.canvasSize_ = new Vector(this.columns_ * this.gridSize_ + spacer, this.rows_ * this.gridSize_ + spacer);
+        this.canvasSize_ = new Vector(this.columns_ * this.gridSize_, this.rows_ * this.gridSize_);
         if (this.canvas_ !== null)
         {
             this.canvas_.width = this.canvasSize_.x;
@@ -84,59 +67,67 @@ var spacer: number = this.gridSize_ * 2;
         }
 
         //Set up the background
-        //var backgroundID : number = 0; //Background probably doesn't need an ID as I don't think anything will interact with it
-        for (var y = 0; y < this.rows_; y++)
+        for (var y = 2; y < this.rows_; y++)
         {
-            for (var x = 0; x < this.columns_; x++)
+            for (var x = 0; x < this.columns_ - 2; x++)
             {
-                this.Add(new Background("Background", "Background", -1, new Vector(this.gridSize_*x, this.gridSize_*y + spacer), new Vector(this.gridSize_, this.gridSize_)));
-                //backgroundID++;
+                const backgroundID: number = this.calcs_.ConvertLocalToID(new Vector(x, y), this.rows_, this.columns_);
+                this.Add(new Background("Background", "Background", backgroundID, new Vector(this.gridSize_*x, this.gridSize_*y), new Vector(this.gridSize_, this.gridSize_)));
             }
         }
 
-        //set up hidden money
-        var numOfTreasure: number = Math.floor(Math.random() * 4 + 1);
-        var occupied: Vector[] = []; //stores positions that already have money
-        for (var i = 0; i < numOfTreasure; i++)
-        {
-            var done: boolean = false; 
-            var x: number = 0;
-            var y: number = 0;
-            while (!done)
-            {
-                done = true;
-                x = Math.floor(Math.random() * this.columns_);
-                y = Math.floor(Math.random() * this.rows_);
-                for (var j = 0; j < occupied.length; j++)
-                {//if the rand position was already used try again
-                    if (x === occupied[j].x && y === occupied[j].y) done = false;
-                }
-            }
-            this.Add(new Coin(this.game_.GetStats(), this, "Coin", "Coin", -1, new Vector(this.gridSize_*x, this.gridSize_*y + spacer), new Vector(this.gridSize_, this.gridSize_), this.gridSize_, this.rows_, this.columns_));
-            occupied.push(new Vector(x, y));
-            console.log(x);
-            console.log(y);
-        }
+        
 
-        this.Add(new FadingText("Fading", "Text", -1, new Vector(0, 32), 32, numOfTreasure + " Treasures", "#ffffff"));
+        // //set up hidden money
+        // var numOfTreasure: number = Math.floor(Math.random() * 4 + 1);
+        // var occupied: Vector[] = []; //stores positions that already have money
+        // for (var i = 0; i < numOfTreasure; i++)
+        // {
+        //     var done: boolean = false; 
+        //     var x: number = 0;
+        //     var y: number = 0;
+        //     while (!done)
+        //     {
+        //         done = true;
+        //         x = Math.floor(Math.random() * (this.columns_ - 2));
+        //         y = Math.floor(Math.random() * (this.rows_ - 2)) + 2;
+        //         for (var j = 0; j < occupied.length; j++)
+        //         {//if the rand position was already used try again
+        //             if (x === occupied[j].x && y === occupied[j].y) done = false;
+        //         }
+        //     }
+        //     const treasureID: number = this.calcs_.ConvertLocalToID(new Vector(x, y), this.rows_, this.columns_);
+        //     this.Add(new Coin(this.game_.GetStats(), this, "Coin", "Coin", treasureID, new Vector(this.gridSize_*x, this.gridSize_*y), new Vector(this.gridSize_, this.gridSize_), this.gridSize_, this.rows_, this.columns_));
+        //     occupied.push(new Vector(x, y));
+        //     console.log(x);
+        //     console.log(y);
+        //     console.log(treasureID);
+        // }
 
-        //Set up dirt
-        var ID: number = 0;
-        for (var y = 0; y < this.rows_; y++)
-        {
-            for (var x = 0; x < this.columns_; x++)
-            {
-                this.Add(new Dirt("Dirt", "Dirt", ID, new Vector(this.gridSize_*x, this.gridSize_*y + spacer), new Vector(this.gridSize_, this.gridSize_), 3));
-                ID++;
-            }
-        }
+        // //Set up dirt
+        // for (var y = 2; y < this.rows_; y++)
+        // {
+        //     for (var x = 0; x < this.columns_ - 2; x++)
+        //     {
+        //         const level: number = Math.floor(Math.random() * 5) + 1;
+        //         const ID: number = this.calcs_.ConvertLocalToID(new Vector(x, y), this.rows_, this.columns_);
+        //         this.Add(new Dirt("Dirt", "Dirt", ID, new Vector(this.gridSize_*x, this.gridSize_*y), new Vector(this.gridSize_, this.gridSize_), level));
+        //     }
+        // }
+
+        this.Treasure();
+        this.Dirt();
 
         this.Add(new Player(this, "Player", "Player", 0, new Vector(0, 0), new Vector(this.gridSize_, this.gridSize_), this.gridSize_, this.rows_, this.columns_))
  
-        this.bm_.Add(new Transition_Button(this, "Transition", "Button", 0, new Vector(this.gridSize_ * this.columns_, 0), new Vector(64, 32), "Return", 32,
+        this.bm_.Add(new Transition_Button(this, "Transition", "Button", 0, new Vector(this.gridSize_ * (this.columns_ - 2), (this.gridSize_ * this.rows_) - this.gridSize_), new Vector(this.gridSize_ * 2, this.gridSize_), "Return", 32,
                     "serif", "#ff0000", "#444444", "#dddddd", "Menu"));
-        this.Add(new TurnCounter(this, "Counter", "Counter", 0, new Vector(0, 0), new Vector(this.gridSize_*this.columns_, this.gridSize_*2)));
-        this.Add(new Text("Text", "Text", 0, new Vector(this.gridSize_ * this.columns_, 32), 16, "Money: " + this.game_.GetStats().GetStat("Money"), "#ffffff"));
+        const maxTurns: number | undefined = this.game_.GetStats().GetStat("MaxTurns");
+        this.Add(new TurnCounter(this, "Counter", "Counter", 0, new Vector(0, 0), new Vector(this.gridSize_*(this.columns_-2), this.gridSize_*2), this.gridSize_, maxTurns === undefined ? 25 : maxTurns));
+        //Set up right panel
+        this.Add(new RightPanel("Right", "Panel", 0, new Vector((this.columns_ - 2) * this.gridSize_, 0), new Vector(2 * this.gridSize_, this.rows_ * this.gridSize_), this.gridSize_, maxTurns === undefined ? 25 : maxTurns));
+        this.Add(new Text("Text", "Text", 0, new Vector(this.gridSize_ * (this.columns_ - 2), this.gridSize_), 16, "Money: " + this.game_.GetStats().GetStat("Money"), "#ff0000"));
+        // this.Add(new FadingText("Fading", "Text", 0, new Vector(0, this.gridSize_), 32, numOfTreasure + " Treasures", "#ff0000"));
     }
     
     public Update(delta_time: number) 
@@ -198,49 +189,51 @@ var spacer: number = this.gridSize_ * 2;
     ///////////////////////////////////////////////////////////////////////////////////////////////
     //Functions for Game Logic
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    // private Click(event: MouseEvent)
-    // {
-    //     if (this.canvas_ === null || this.canvas_ === undefined) 
-    //     {
-    //         console.log("Fail");
-    //         return;
-    //     }
+    private Dirt()
+    {
+        //Set up dirt
+        for (var y = 2; y < this.rows_; y++)
+        {
+            for (var x = 0; x < this.columns_ - 2; x++)
+            {
+                const level: number = Math.floor(Math.random() * (((this.columns_ - 2) / 5) * 3)) + 1;
+                const ID: number = this.calcs_.ConvertLocalToID(new Vector(x, y), this.rows_, this.columns_);
+                this.Add(new Dirt("Dirt", "Dirt", ID, new Vector(this.gridSize_*x, this.gridSize_*y), new Vector(this.gridSize_, this.gridSize_), level));
+            }
+        }
+    }
 
-    //     var rectangle : DOMRect = this.canvas_.getBoundingClientRect();
-    //     var mousePosition: Vector = new Vector(0, 0);
-    //     mousePosition.x = event.clientX - rectangle.left;
-    //     mousePosition.y = event.clientY - rectangle.top;
+    private Treasure()
+    {
+        //every 5 columns add a potential of 5 treasure + a garentee of 2 treasure per 5 columns
+        //example: 15 columns -> min treasure = 6 / max treasure = 21
+        var numOfTreasure: number = Math.floor(Math.random() * (((this.columns_ - 2) / 5) * 5) + 1) + ((this.columns_ - 2) / 5) * 2;
+        var occupied: Vector[] = []; //stores positions that already have money
+        for (var i = 0; i < numOfTreasure; i++)
+        {
+            var done: boolean = false; 
+            var x: number = 0;
+            var y: number = 0;
+            while (!done)
+            {
+                done = true;
+                x = Math.floor(Math.random() * (this.columns_ - 2));
+                y = Math.floor(Math.random() * (this.rows_ - 2)) + 2;
+                for (var j = 0; j < occupied.length; j++)
+                {//if the rand position was already used try again
+                    if (x === occupied[j].x && y === occupied[j].y) done = false;
+                }
+            }
+            const treasureID: number = this.calcs_.ConvertLocalToID(new Vector(x, y), this.rows_, this.columns_);
+            this.Add(new Coin(this.game_.GetStats(), this, "Coin", "Coin", treasureID, new Vector(this.gridSize_*x, this.gridSize_*y), new Vector(this.gridSize_, this.gridSize_), this.gridSize_, this.rows_, this.columns_));
+            occupied.push(new Vector(x, y));
+            console.log(x);
+            console.log(y);
+            console.log(treasureID);
+        }
 
-    //     var localPosition : Vector = this.ConvertWorldToLocal(mousePosition);
-    //     if (localPosition === null) return;
-    //     var ID : number = this.ConvertLocalToID(localPosition);
-    //     if (ID === null) return;
-    // }
-
-    // private Touch(event: TouchEvent)
-    // {
-    //     if (this.canvas_ === null || this.canvas_ === undefined) 
-    //     {
-    //         console.log("Fail");
-    //         return;
-    //     }
-
-    //     event.preventDefault(); //prevent other input
-    //     var touch = event.changedTouches[0]; //grab touch event (touch end)
-    //     var rectangle : DOMRect = this.canvas_.getBoundingClientRect();
-    //     var mousePosition: Vector = new Vector(0, 0);
-    //     mousePosition.x = touch.pageX - rectangle.left;
-    //     mousePosition.y = touch.pageY - rectangle.top;
-
-    //     var localPosition : Vector = this.ConvertWorldToLocal(mousePosition);
-    //     if (localPosition === null) return;
-    //     var ID : number = this.ConvertLocalToID(localPosition);
-    //     if (ID === null) return;
-    // }
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////
-    //Functions for Event Listeners
-    ///////////////////////////////////////////////////////////////////////////////////////////////
+        this.Add(new FadingText("Fading", "Text", 0, new Vector(0, this.gridSize_), 32, numOfTreasure + " Treasures", "#ff0000"));
+    }
 }
 
 export {GameScene};

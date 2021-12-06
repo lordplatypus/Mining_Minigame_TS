@@ -49,6 +49,15 @@ class Calculations
         return localPosition;
     }
     
+    public ConvertWorldToID(worldPosition: Vector, gridSize: number, rows: number, columns: number): number
+    {
+        return this.ConvertLocalToID(this.ConvertWorldToLocal(worldPosition, gridSize), rows, columns);
+    }
+
+    public ConvertIDToWorld(ID: number, gridSize: number, columns: number): Vector
+    {
+        return this.ConvertLocalToWorld(this.ConvertIDToLocal(ID, columns), gridSize);
+    }
 }
 
 export {Calculations};

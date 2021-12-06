@@ -4,7 +4,7 @@ import { Vector } from "../Vector";
 class Dirt extends Gameobject
 {
     private level_: number;
-    private color_: string;
+    private img_: HTMLImageElement;
 
     constructor(name: string, tag: string, ID: number, position: Vector, size: Vector, level: number)
     {
@@ -18,7 +18,8 @@ class Dirt extends Gameobject
         this.height_ = size.y;
         this.level_ = level;
 
-        this.color_ = "#0000cc"; //TEST - change to images
+        this.img_ = new Image();
+        this.img_.src = "./Dirt.png";
     }
 
     public Update(delta_time: number) 
@@ -28,19 +29,14 @@ class Dirt extends Gameobject
     {
         if (ctx === null) return;
 
-        //TEST
-        ctx.fillStyle = this.color_;
-        ctx.fillRect(this.position_.x, this.position_.y, this.width_, this.height_);
+        ctx.drawImage(this.img_, this.level_ * 320, 0, 320, this.img_.naturalHeight, 
+            this.position_.x, this.position_.y, this.width_, this.height_);
     }
 
     public LowerLevel()
     {
         this.level_--;
-
         if (this.level_ <= 0) this.Kill();
-        else if (this.level_ === 1) this.color_ = "#cc0000";
-        else if (this.level_ === 2) this.color_ = "#00cc00";
-        else if (this.level_ === 3) this.color_ = "#0000cc";
     }
 }
 
