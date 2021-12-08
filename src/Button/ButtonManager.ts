@@ -22,19 +22,19 @@ class ButtonManager
         }
     }
 
-    public Draw(ctx: CanvasRenderingContext2D | null)
+    public Draw(main_ctx: CanvasRenderingContext2D | null, grid_ctx: CanvasRenderingContext2D | null)
     {
         for (var i = 0; i < this.buttons_.length; i++)
         {
-            this.buttons_[i].Draw(ctx);
+            this.buttons_[i].Draw(main_ctx, grid_ctx);
         }
     }
 
-    public DelayedDraw(ctx: CanvasRenderingContext2D | null)
+    public DelayedDraw(main_ctx: CanvasRenderingContext2D | null, grid_ctx: CanvasRenderingContext2D | null)
     {
         for (var i = 0; i < this.buttons_.length; i++)
         {
-            this.buttons_[i].DelayedDraw(ctx);
+            this.buttons_[i].DelayedDraw(main_ctx, grid_ctx);
         }
     }
 

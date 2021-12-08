@@ -5,7 +5,7 @@ import { Vector } from "../Vector";
 import { Gameobject } from "../GameObject/Gameobject";
 //Butons
 import { ButtonManager } from "../Button/ButtonManager";
-import { Transition_Button } from "../Button/Transition_Button";
+import { TransitionButton } from "../Button/TransitionButton";
 
 class MenuScene implements Scene
 {
@@ -74,9 +74,9 @@ class MenuScene implements Scene
         //BUTTON SETUP
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         this.bm_.Init();
-        this.bm_.Add(new Transition_Button(this, "Transition", "Button", 0, new Vector(0, 0), new Vector(this.gridSize_ * 2, this.gridSize_), "Game", this.gridSize_ / 2,
+        this.bm_.Add(new TransitionButton(this, "Transition", "Button", 0, new Vector(0, 0), new Vector(this.gridSize_ * 2, this.gridSize_), "Game", this.gridSize_ / 2,
                     "serif", "#ff0000", "#444444", "#dddddd", "Game"));
-        this.bm_.Add(new Transition_Button(this, "Transition", "Button", 0, new Vector(0, this.gridSize_ * 2), new Vector(this.gridSize_ * 2, this.gridSize_), "Shop", this.gridSize_,
+        this.bm_.Add(new TransitionButton(this, "Transition", "Button", 0, new Vector(0, this.gridSize_ * 2), new Vector(this.gridSize_ * 2, this.gridSize_), "Shop", this.gridSize_,
                     "serif", "#ff0000", "#444444", "#dddddd", "Shop"));
     }
     
@@ -85,11 +85,11 @@ class MenuScene implements Scene
         this.gom_.Update(delta_time);
     }
 
-    public Draw(ctx: CanvasRenderingContext2D | null) 
+    public Draw(main_ctx: CanvasRenderingContext2D | null, grid_ctx: CanvasRenderingContext2D | null) 
     {
-        this.gom_.Draw(ctx);
-        this.gom_.DelayedDraw(ctx);
-        this.bm_.DelayedDraw(ctx);
+        this.gom_.Draw(main_ctx, grid_ctx);
+        this.gom_.DelayedDraw(main_ctx, grid_ctx);
+        this.bm_.DelayedDraw(main_ctx, grid_ctx);
     }
 
     public ChangeScene(sceneName: string) 

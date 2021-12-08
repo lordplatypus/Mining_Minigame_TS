@@ -2,15 +2,15 @@ import { Button } from "./Button";
 import { Stats } from "../Stats";
 import { Vector } from "../Vector";
 
-class Buy_Button extends Button
+class BuyButton extends Button
 {
     private stats_: Stats;
     private statName_: string;
     private cost_: number;
-    private quantity_: number
+    private value_: number
 
     constructor(stats: Stats, name: string, tag: string, ID: number, position: Vector, size: Vector, buttonText: string, textSize: number, 
-                font: string, textColor: string, color: string, highlightColor: string, statName: string, cost: number, quntity: number)
+                font: string, textColor: string, color: string, highlightColor: string, statName: string, value: number, cost: number)
     {
         super();
         this.stats_ = stats;
@@ -28,7 +28,7 @@ class Buy_Button extends Button
 
         this.statName_ = statName;
         this.cost_ = cost;
-        this.quantity_ = quntity;
+        this.value_ = value;
 
         this.highlighted_ = false;
     }
@@ -41,13 +41,13 @@ class Buy_Button extends Button
         if (currentStatValue === undefined) return; //make sure it exists
 
         var currentMoney: number | undefined = this.stats_.GetStat("Money"); //get current money
-        if (currentMoney === undefined || currentMoney < this.cost_ * this.quantity_) return; //return if undefined or not enough to buy upgrade
-        else currentMoney -= this.cost_ * this.quantity_; //subtract total cost from money
+        if (currentMoney === undefined || currentMoney < this.cost_ * this.value_) return; //return if undefined or not enough to buy upgrade
+        else currentMoney -= this.cost_ * this.value_; //subtract total cost from money
 
-        this.stats_.SetStat(this.statName_, currentStatValue + this.quantity_); //set stat
+        this.stats_.SetStat(this.statName_, currentStatValue + this.value_); //set stat
         this.stats_.SetStat("Money", currentMoney); //set money
         console.log("Bought");
     }
 }
 
-export {Buy_Button};
+export {BuyButton};

@@ -15,22 +15,22 @@ class Button extends Gameobject
     public Update(delta_time: number) 
     {}
 
-    public Draw(ctx: CanvasRenderingContext2D | null) 
+    public Draw(main_ctx: CanvasRenderingContext2D | null, grid_ctx: CanvasRenderingContext2D | null) 
     {
-        if (ctx === null) return;
+        if (main_ctx === null) return;
     }
 
-    public DelayedDraw(ctx: CanvasRenderingContext2D | null) 
+    public DelayedDraw(main_ctx: CanvasRenderingContext2D | null, grid_ctx: CanvasRenderingContext2D | null) 
     {
-        if (ctx === null) return;
+        if (main_ctx === null) return;
 
         //TEST
-        if (this.highlighted_) ctx.fillStyle = this.highlightColor_;
-        else ctx.fillStyle = this.color_;
-        ctx.fillRect(this.position_.x, this.position_.y, this.size_.x, this.size_.y);
-        ctx.font = this.textSize_ + "px " + this.font_;
-        ctx.fillStyle = this.textColor_;
-        ctx.fillText(this.text_, this.position_.x, this.position_.y + this.textSize_);
+        if (this.highlighted_) main_ctx.fillStyle = this.highlightColor_;
+        else main_ctx.fillStyle = this.color_;
+        main_ctx.fillRect(this.position_.x, this.position_.y, this.size_.x, this.size_.y);
+        main_ctx.font = this.textSize_ + "px " + this.font_;
+        main_ctx.fillStyle = this.textColor_;
+        main_ctx.fillText(this.text_, this.position_.x, this.position_.y + this.textSize_);
     }
 
     public Effect()

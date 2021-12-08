@@ -5,8 +5,8 @@ import { Vector } from "../Vector";
 import { Gameobject } from "../GameObject/Gameobject";
 //Butons
 import { ButtonManager } from "../Button/ButtonManager";
-import { Transition_Button } from "../Button/Transition_Button";
-import { Buy_Button } from "../Button/Buy_Button";
+import { TransitionButton } from "../Button/TransitionButton";
+import { BuyButton } from "../Button/BuyButton";
 
 class ShopScene implements Scene
 {
@@ -75,11 +75,11 @@ class ShopScene implements Scene
         //BUTTON SETUP
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         this.bm_.Init();
-        this.bm_.Add(new Transition_Button(this, "Transition", "Button", 0, new Vector(0, 0), new Vector(128, 32), "Menu", 32,
+        this.bm_.Add(new TransitionButton(this, "Transition", "Button", 0, new Vector(0, 0), new Vector(128, 32), "Menu", 32,
                     "serif", "#ff0000", "#444444", "#dddddd", "Menu"));
-        this.bm_.Add(new Buy_Button(this.game_.GetStats(), "MaxPower", "Button", 1, new Vector(0, 64), new Vector(256, 32), "Max Power +1 : 1 gold", 32,
+        this.bm_.Add(new BuyButton(this.game_.GetStats(), "MaxPower", "Button", 1, new Vector(0, 64), new Vector(256, 32), "Max Power +1 : 1 gold", 32,
                     "serif", "#ff0000", "#444444", "#dddddd", "MaxPower", 1, 1));
-        this.bm_.Add(new Buy_Button(this.game_.GetStats(), "MaxTurns", "Button", 1, new Vector(0, 128), new Vector(256, 32), "Turns +1 : 1 gold", 32,
+        this.bm_.Add(new BuyButton(this.game_.GetStats(), "MaxTurns", "Button", 1, new Vector(0, 128), new Vector(256, 32), "Turns +1 : 1 gold", 32,
                     "serif", "#ff0000", "#444444", "#dddddd", "MaxTurns", 1, 1));
     }
     
@@ -88,11 +88,11 @@ class ShopScene implements Scene
         this.gom_.Update(delta_time);
     }
 
-    public Draw(ctx: CanvasRenderingContext2D | null) 
+    public Draw(main_ctx: CanvasRenderingContext2D | null, grid_ctx: CanvasRenderingContext2D | null) 
     {
-        this.gom_.Draw(ctx);
-        this.gom_.DelayedDraw(ctx);
-        this.bm_.DelayedDraw(ctx);
+        this.gom_.Draw(main_ctx, grid_ctx);
+        this.gom_.DelayedDraw(main_ctx, grid_ctx);
+        this.bm_.DelayedDraw(main_ctx, grid_ctx);
     }
 
     public ChangeScene(sceneName: string) 

@@ -1,23 +1,25 @@
 import { Game } from "./Game";
 
-var game_ = new Game();
-var canvas_ = <HTMLCanvasElement>$("main_canvas");
-var ctx = canvas_.getContext("2d");
+var game_: Game = new Game(); //Scene manager
+
+var main_canvas_: HTMLCanvasElement = <HTMLCanvasElement>$("main_canvas");
+var main_ctx_: CanvasRenderingContext2D | null = main_canvas_.getContext("2d");
+
+var grid_canvas_: HTMLCanvasElement = <HTMLCanvasElement>$("grid_canvas");
+var grid_ctx_: CanvasRenderingContext2D | null = grid_canvas_.getContext("2d");
 
 Main();
 
 function Main()
 {
     game_.Update(delta_time());
-    if (ctx !== null) 
+    if (main_ctx_ !== null) 
     {
-        ctx.fillStyle = "black"; //set background color
-        ctx.fillRect(0, 0, canvas_.getBoundingClientRect().width, canvas_.getBoundingClientRect().height); //clear the canvas and fill it with black
+        main_ctx_.fillStyle = "black"; //set background color
+        main_ctx_.fillRect(0, 0, main_canvas_.getBoundingClientRect().width, main_canvas_.getBoundingClientRect().height); //clear the canvas and fill it with black
     }
-    game_.Draw(ctx);
+    game_.Draw(main_ctx_, grid_ctx_);
     var t = setTimeout(Main, 16);
-
-    //console.log("Main");
 }
 
 function $(id: string)

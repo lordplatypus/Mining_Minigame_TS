@@ -2,7 +2,7 @@ import { Button } from "./Button";
 import { Scene } from "../Scene/Scene";
 import { Vector } from "../Vector";
 
-class Transition_Button extends Button
+class TransitionButton extends Button
 {
     private scene_: Scene;
     private transitionToSceneName_: string;
@@ -36,4 +36,4 @@ class Transition_Button extends Button
     }
 }
 
-export {Transition_Button};
+export {TransitionButton};

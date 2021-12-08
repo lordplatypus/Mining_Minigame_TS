@@ -27,14 +27,14 @@ class Text extends Gameobject
         if (ctx === null) return;
     }
 
-    public DelayedDraw(ctx: CanvasRenderingContext2D | null) 
+    public DelayedDraw(main_ctx: CanvasRenderingContext2D | null, grid_ctx: CanvasRenderingContext2D | null) 
     {
-        if (ctx === null) return;
+        if (main_ctx === null) return;
 
         //TEST
-        ctx.fillStyle = this.color_;
-        ctx.font =  this.size_ + 'px serif';
-        ctx.fillText(this.text_, this.position_.x, this.position_.y + this.size_);
+        main_ctx.fillStyle = this.color_;
+        main_ctx.font =  this.size_ + 'px serif';
+        main_ctx.fillText(this.text_, this.position_.x, this.position_.y + this.size_);
     }
 
     public set Text(text: string) {this.text_ = text;}

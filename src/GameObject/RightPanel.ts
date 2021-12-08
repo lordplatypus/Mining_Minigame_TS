@@ -59,23 +59,23 @@ class RightPanel extends Gameobject
         if (this.crackNum_ > 2 * 640) this.crackNum_ = 2 * 640;
     }
 
-    public Draw(ctx: CanvasRenderingContext2D | null) 
+    public Draw(main_ctx: CanvasRenderingContext2D | null, grid_ctx: CanvasRenderingContext2D | null) 
     {
-        if (ctx === null) return;
+        if (main_ctx === null) return;
 
-        ctx.drawImage(this.topImg_, 0, 0, this.topImg_.naturalWidth, this.topImg_.naturalHeight, 
+        main_ctx.drawImage(this.topImg_, 0, 0, this.topImg_.naturalWidth, this.topImg_.naturalHeight, 
             this.position_.x, this.position_.y, this.width_, this.gridSize_);
 
         for (var i = 0; i < this.numOfMiddle_; i++)
         {
-            ctx.drawImage(this.middleImgs_[i], 0, 0, this.middleImgs_[i].naturalWidth, this.middleImgs_[i].naturalHeight, 
+            main_ctx.drawImage(this.middleImgs_[i], 0, 0, this.middleImgs_[i].naturalWidth, this.middleImgs_[i].naturalHeight, 
                 this.position_.x, this.position_.y + this.gridSize_ + (i * this.gridSize_), this.width_, this.gridSize_);
         }
 
-        ctx.drawImage(this.bottomImg_, 0, 0, this.bottomImg_.naturalWidth, this.bottomImg_.naturalHeight, 
+        main_ctx.drawImage(this.bottomImg_, 0, 0, this.bottomImg_.naturalWidth, this.bottomImg_.naturalHeight, 
             this.position_.x, this.position_.y + this.height_ - this.gridSize_, this.width_, this.gridSize_);
 
-        ctx.drawImage(this.crackImg_, this.crackNum_, 0, 640, this.crackImg_.naturalHeight, 
+        main_ctx.drawImage(this.crackImg_, this.crackNum_, 0, 640, this.crackImg_.naturalHeight, 
             this.position_.x, this.position_.y, this.width_, this.gridSize_ * 2);
     }
 }

@@ -58,13 +58,13 @@ class Coin extends Gameobject
         }
     }
 
-    public Draw(ctx: CanvasRenderingContext2D | null) 
+    public Draw(main_ctx: CanvasRenderingContext2D | null, grid_ctx: CanvasRenderingContext2D | null) 
     {
-        if (ctx === null) return;
+        if (grid_ctx === null) return;
 
         //TEST
-        ctx.fillStyle = "#ffff00";
-        ctx.fillRect(this.position_.x, this.position_.y, this.width_, this.height_);
+        grid_ctx.fillStyle = "#ffff00";
+        grid_ctx.fillRect(this.position_.x, this.position_.y, this.width_, this.height_);
     }
 }
 

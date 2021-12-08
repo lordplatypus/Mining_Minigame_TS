@@ -13,8 +13,8 @@ class Gameobject
 
     public Update(delta_time: number) {}
     public TurnUpdate() {}
-    public Draw(ctx: CanvasRenderingContext2D | null) {}
-    public DelayedDraw(ctx: CanvasRenderingContext2D | null) {}
+    public Draw(main_ctx: CanvasRenderingContext2D | null, grid_ctx: CanvasRenderingContext2D | null) {}
+    public DelayedDraw(main_ctx: CanvasRenderingContext2D | null, grid_ctx: CanvasRenderingContext2D | null) {}
     public Kill() {this.isDead_ = true;}
     public Deconstructor() {}
 

@@ -41,9 +41,9 @@ class Game
         this.scenes_.get(this.currentScene_)?.Update(delta_time);
     }
 
-    public Draw(ctx: CanvasRenderingContext2D | null)
+    public Draw(main_ctx: CanvasRenderingContext2D | null, grid_ctx: CanvasRenderingContext2D | null)
     {
-        this.scenes_.get(this.currentScene_)?.Draw(ctx);
+        this.scenes_.get(this.currentScene_)?.Draw(main_ctx, grid_ctx);
     }
 
     public GetStats() : Stats

@@ -25,19 +25,19 @@ class GameobjectManager
         }
     }
 
-    Draw(ctx: CanvasRenderingContext2D | null)
+    Draw(main_ctx: CanvasRenderingContext2D | null, grid_ctx: CanvasRenderingContext2D | null)
     {
         for (var i = 0; i < this.gameobjects_.length; i++)
         {
-            this.gameobjects_[i].Draw(ctx);
+            this.gameobjects_[i].Draw(main_ctx, grid_ctx);
         }
     }
 
-    DelayedDraw(ctx: CanvasRenderingContext2D | null)
+    DelayedDraw(main_ctx: CanvasRenderingContext2D | null, grid_ctx: CanvasRenderingContext2D | null)
     {
         for (var i = 0; i < this.gameobjects_.length; i++)
         {
-            this.gameobjects_[i].DelayedDraw(ctx);
+            this.gameobjects_[i].DelayedDraw(main_ctx, grid_ctx);
         }
     }
 

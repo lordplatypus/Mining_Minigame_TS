@@ -4,7 +4,7 @@ interface Scene
 {
     Init() : void;
     Update(delta_time: number) : void;
-    Draw(ctx: CanvasRenderingContext2D | null) : void;
+    Draw(main_ctx: CanvasRenderingContext2D | null, grid_ctx: CanvasRenderingContext2D | null) : void;
     ChangeScene(sceneName: string) : void;
     Add(gameobject: Gameobject) : void;
     Search(name: string, tag: string, ID: number) : Gameobject | null;

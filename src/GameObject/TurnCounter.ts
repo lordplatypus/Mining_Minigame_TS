@@ -82,16 +82,16 @@ class TurnCounter extends Gameobject
         }
     }
 
-    public Draw(ctx: CanvasRenderingContext2D | null) 
+    public Draw(main_ctx: CanvasRenderingContext2D | null, grid_ctx: CanvasRenderingContext2D | null) 
     {
-        if (ctx === null) return;
+        if (main_ctx === null) return;
         //TEST
         // ctx.fillStyle = "#00ffff";
         // ctx.fillRect(this.position_.x, this.position_.y, this.width_, this.height_);
 
         for (var i = 0; i < this.numOfSections_; i++)
         {
-            ctx.drawImage(this.backgroundImgs_[i], 0, 0, this.backgroundImgs_[i].naturalWidth, this.backgroundImgs_[i].naturalHeight, 
+            main_ctx.drawImage(this.backgroundImgs_[i], 0, 0, this.backgroundImgs_[i].naturalWidth, this.backgroundImgs_[i].naturalHeight, 
                 this.position_.x + (i * this.gridSize_), this.position_.y, this.gridSize_, this.height_);
         }
 
@@ -99,25 +99,25 @@ class TurnCounter extends Gameobject
         {
             if (i % 2 === 0)
             {
-                ctx.save();
-                ctx.scale(-1, 1);
-                ctx.drawImage(this.crackImgs_[i], 0, 0, this.crackImgs_[i].naturalWidth, this.crackImgs_[i].naturalHeight, 
+                main_ctx.save();
+                main_ctx.scale(-1, 1);
+                main_ctx.drawImage(this.crackImgs_[i], 0, 0, this.crackImgs_[i].naturalWidth, this.crackImgs_[i].naturalHeight, 
                     -(this.position_.x + this.width_ - (i * this.gridSize_)), this.position_.y, this.gridSize_, this.height_);
-                ctx.restore();
+                main_ctx.restore();
             }
-            else ctx.drawImage(this.crackImgs_[i], 0, 0, this.crackImgs_[i].naturalWidth, this.crackImgs_[i].naturalHeight, 
+            else main_ctx.drawImage(this.crackImgs_[i], 0, 0, this.crackImgs_[i].naturalWidth, this.crackImgs_[i].naturalHeight, 
                 this.position_.x + (this.width_ - this.gridSize_) - (i * this.gridSize_), this.position_.y, this.gridSize_, this.height_);
         }
 
-        if (this.isUp_) ctx.drawImage(this.crackUpImg_, 0, 0, this.crackUpImg_.naturalWidth, this.crackUpImg_.naturalHeight, 
+        if (this.isUp_) main_ctx.drawImage(this.crackUpImg_, 0, 0, this.crackUpImg_.naturalWidth, this.crackUpImg_.naturalHeight, 
             this.position_.x + (this.width_ - this.gridSize_) - (this.crackImgs_.length * this.gridSize_), this.position_.y, this.gridSize_, this.height_);
-        else ctx.drawImage(this.crackDownImg_, 0, 0, this.crackDownImg_.naturalWidth, this.crackDownImg_.naturalHeight, 
+        else main_ctx.drawImage(this.crackDownImg_, 0, 0, this.crackDownImg_.naturalWidth, this.crackDownImg_.naturalHeight, 
             this.position_.x + (this.width_ - this.gridSize_) - (this.crackImgs_.length * this.gridSize_), this.position_.y, this.gridSize_, this.height_);
     }
 
-    public DelayedDraw(ctx: CanvasRenderingContext2D | null) 
+    public DelayedDraw(main_ctx: CanvasRenderingContext2D | null, grid_ctx: CanvasRenderingContext2D | null) 
     {
-        if (ctx === null) return;
+        if (main_ctx === null) return;
     }
 }
 
