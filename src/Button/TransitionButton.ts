@@ -8,7 +8,7 @@ class TransitionButton extends Button
     private transitionToSceneName_: string;
 
     constructor(scene: Scene, name: string, tag: string, ID: number, position: Vector, size: Vector, buttonText: string, textSize: number,
-                font: string, textColor: string, color: string, highlightColor: string, transitionToSceneName: string)
+                font: string, textColor: string, highlightTextColor: string, imgPath: string, transitionToSceneName: string)
     {
         super();
         this.scene_ = scene;
@@ -21,12 +21,11 @@ class TransitionButton extends Button
         this.textSize_ = textSize;
         this.font_ = font;
         this.textColor_ = textColor;
-        this.color_ = color;
-        this.highlightColor_ = highlightColor;
+        this.highlightTextColor_ = highlightTextColor;
+        this.img_ = new Image();
+        this.img_.src = imgPath;
 
         this.transitionToSceneName_ = transitionToSceneName;
-
-        this.highlighted_ = false;
     }
 
     public Effect()

@@ -92,19 +92,25 @@ class GameScene implements Scene
 
         //FOR THE MAIN CANVAS
 
-        //Buttons
-        const maxArea: number | undefined = this.game_.GetStats().GetStat("MaxArea");
-        const maxPower: number | undefined = this.game_.GetStats().GetStat("MaxPower");
+        //Return Button
         this.bm_.Add(new TransitionButton(this, "Transition", "Button", 0, new Vector(this.mainCellSize_ * (this.mainRows_ - 2), (this.mainCellSize_ * this.mainRows_) - this.mainCellSize_), new Vector(this.mainCellSize_ * 2, this.mainCellSize_), "Return", 32,
-                    "serif", "#ff0000", "#444444", "#dddddd", "Menu"));
+                    "serif", "#ff0000", "#444444", "./Button_Brown.png", "Menu"));
+
+        //Area <> buttons && text
+        const areaText: Text = new Text("Text", "Text", 1, new Vector(this.mainCellSize_ * (this.mainRows_ - 2), this.mainCellSize_ * 3), 16, "" + this.game_.GetStats().GetStat("Area"), "#ff0000");
+        this.Add(areaText);
+        const maxArea: number | undefined = this.game_.GetStats().GetStat("MaxArea");
         this.bm_.Add(new UpdateStatButton(this.game_.GetStats(), "Stat", "Button", 0, new Vector(this.mainCellSize_ * (this.mainRows_ - 2), this.mainCellSize_ * 4), new Vector(this.mainCellSize_ / 2, this.mainCellSize_ / 2), "<", 32,
-                    "serif", "#ff0000", "#444444", "#dddddd", "Area", -1, 0, maxArea === undefined ? 0 : maxArea));
+                    "serif", "#ff0000", "#444444", "./Button_Red.png", "Area", -1, 0, maxArea === undefined ? 0 : maxArea, areaText));
         this.bm_.Add(new UpdateStatButton(this.game_.GetStats(), "Stat", "Button", 0, new Vector(this.mainCellSize_ * (this.mainRows_ - 1), this.mainCellSize_ * 4), new Vector(this.mainCellSize_ / 2, this.mainCellSize_ / 2), ">", 32,
-                    "serif", "#ff0000", "#444444", "#dddddd", "Area", 1, 0, maxArea === undefined ? 0 : maxArea));
+                    "serif", "#ff0000", "#444444", "./Button_Blue.png", "Area", 1, 0, maxArea === undefined ? 0 : maxArea, areaText));
+
+        //Power <> buttons && text
+        const maxPower: number | undefined = this.game_.GetStats().GetStat("MaxPower");
         this.bm_.Add(new UpdateStatButton(this.game_.GetStats(), "Stat", "Button", 0, new Vector(this.mainCellSize_ * (this.mainRows_ - 2), this.mainCellSize_ * 6), new Vector(this.mainCellSize_ / 2, this.mainCellSize_ / 2), "<", 32,
-                    "serif", "#ff0000", "#444444", "#dddddd", "Power", -1, 1, maxPower === undefined ? 0 : maxPower));
+                    "serif", "#ff0000", "#444444", "./Button_Red.png", "Power", -1, 1, maxPower === undefined ? 0 : maxPower));
         this.bm_.Add(new UpdateStatButton(this.game_.GetStats(), "Stat", "Button", 0, new Vector(this.mainCellSize_ * (this.mainRows_ - 1), this.mainCellSize_ * 6), new Vector(this.mainCellSize_ / 2, this.mainCellSize_ / 2), ">", 32,
-                    "serif", "#ff0000", "#444444", "#dddddd", "Power", 1, 1, maxPower === undefined ? 0 : maxPower));
+                    "serif", "#ff0000", "#444444", "./Button_Blue.png", "Power", 1, 1, maxPower === undefined ? 0 : maxPower));
 
         
         const maxTurns: number | undefined = this.game_.GetStats().GetStat("MaxTurns");
@@ -170,10 +176,11 @@ class GameScene implements Scene
         this.bm_.Clear();
     }
 
-    public TurnUpdate()
+    public TurnUpdate(turnsPassed?: number)
     {//Turn progrssion
+        if (turnsPassed === undefined) turnsPassed = 1;
         this.gom_.RemoveDead(); //delete dead objects
-        this.gom_.TurnUpdate(); //update every gameobject at turn progression
+        this.gom_.TurnUpdate(turnsPassed); //update every gameobject at turn progression
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////

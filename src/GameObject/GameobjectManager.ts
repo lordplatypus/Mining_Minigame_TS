@@ -17,11 +17,11 @@ class GameobjectManager
         }
     }
 
-    TurnUpdate()
+    TurnUpdate(turnsPassed: number)
     {//Update all gameobjects at controlled intervals
         for (var i = 0; i < this.gameobjects_.length; i++)
         {
-            this.gameobjects_[i].TurnUpdate();
+            this.gameobjects_[i].TurnUpdate(turnsPassed);
         }
     }
 

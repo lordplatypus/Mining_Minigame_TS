@@ -37,7 +37,7 @@ class Coin extends Gameobject
     public Update(delta_time: number) 
     {}
 
-    public TurnUpdate() 
+    public TurnUpdate(turnsPassed: number) 
     {
         if (this.done_) return;
 

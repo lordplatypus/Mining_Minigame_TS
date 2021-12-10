@@ -92,15 +92,6 @@ class Particle extends Gameobject
         const x: number = this.position_.x + this.velocity_.x * delta_time;
         const y: number = this.position_.y + this.velocity_.y * delta_time;
         this.position_ = new Vector(x, y);
-
-        // this.velocity_.x_ = this.velocity_.x_ + this.force_.x * delta_time;
-        // this.velocity_.y_ = this.velocity_.y_ + this.force_.y * delta_time;
-    
-        // this.velocity_.x_ *= Math.pow(this.damp_, delta_time * 60);
-        // this.velocity_.y_ *= Math.pow(this.damp_, delta_time * 60);
-    
-        // this.position_.x_ = this.position_.x_ + this.velocity_.x_ * delta_time;
-        // this.position_.y_ = this.position_.y_ + this.velocity_.y_ * delta_time;
     
         //angularVelocity *= angularDamp;
         this.angle_ += this.angularVelocity_ * delta_time;
@@ -139,12 +130,12 @@ class Particle extends Gameobject
         // this.tempCanvas_?.remove(); //Not needed? since tempcanvas wasn't added to any parent it should go out of scope when this is Killed?
     }
 
-    private LerpNumber(a: number, b: number, t: number) : number
+    public LerpNumber(a: number, b: number, t: number) : number
     {
         return a + (b - a) * t;
     } 
 
-    private LerpVector(a: Vector, b: Vector, t: number) : Vector
+    public LerpVector(a: Vector, b: Vector, t: number) : Vector
     {
         const x = (1 - t) * a.x + t * b.x;
         const y = (1 - t) * a.y + t * b.y;

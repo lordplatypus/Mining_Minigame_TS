@@ -10,7 +10,7 @@ class BuyButton extends Button
     private value_: number
 
     constructor(stats: Stats, name: string, tag: string, ID: number, position: Vector, size: Vector, buttonText: string, textSize: number, 
-                font: string, textColor: string, color: string, highlightColor: string, statName: string, value: number, cost: number)
+                font: string, textColor: string, highlightTextColor: string, imgPath: string, statName: string, value: number, cost: number)
     {
         super();
         this.stats_ = stats;
@@ -23,14 +23,13 @@ class BuyButton extends Button
         this.textSize_ = textSize;
         this.font_ = font;
         this.textColor_ = textColor;
-        this.color_ = color;
-        this.highlightColor_ = highlightColor;
+        this.highlightTextColor_ = highlightTextColor;
+        this.img_ = new Image();
+        this.img_.src = imgPath;
 
         this.statName_ = statName;
         this.cost_ = cost;
         this.value_ = value;
-
-        this.highlighted_ = false;
     }
 
     public Effect()

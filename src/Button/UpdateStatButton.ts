@@ -1,6 +1,7 @@
 import { Button } from "./Button";
 import { Stats } from "../Stats";
 import { Vector } from "../Vector";
+import { Text } from "../GameObject/Text";
 
 class UpdateStatButton extends Button
 {
@@ -9,9 +10,10 @@ class UpdateStatButton extends Button
     private value_: number
     private minValue_: number;
     private maxValue_: number;
+    private textObj_: Text | undefined; //optional, if there is text displayed, this will give access to that text
 
     constructor(stats: Stats, name: string, tag: string, ID: number, position: Vector, size: Vector, buttonText: string, textSize: number, font: string, 
-                textColor: string, color: string, highlightColor: string, statName: string, value: number, minValue: number, maxValue: number)
+                textColor: string, highlightTextColor: string, imgPath: string, statName: string, value: number, minValue: number, maxValue: number, textObj?: Text)
     {
         super();
         this.stats_ = stats;
@@ -24,15 +26,15 @@ class UpdateStatButton extends Button
         this.textSize_ = textSize;
         this.font_ = font;
         this.textColor_ = textColor;
-        this.color_ = color;
-        this.highlightColor_ = highlightColor;
+        this.highlightTextColor_ = highlightTextColor;
+        this.img_ = new Image();
+        this.img_.src = imgPath;
 
         this.statName_ = statName;
         this.value_ = value;
         this.minValue_ = minValue;
         this.maxValue_ = maxValue;
-
-        this.highlighted_ = false;
+        this.textObj_ = textObj;
     }
 
     public Effect()
@@ -42,9 +44,12 @@ class UpdateStatButton extends Button
         var currentStatValue: number | undefined = this.stats_.GetStat(this.statName_); //get current stat value
         if (currentStatValue === undefined) return; //make sure it exists
 
-        if (currentStatValue + this.value_ < this.minValue_ || currentStatValue + this.value_ > this.maxValue_) return; //limter
+        const newValue: number = currentStatValue + this.value_;
+        if (newValue < this.minValue_ || newValue > this.maxValue_) return; //limter
+        this.stats_.SetStat(this.statName_, newValue); //set stat
 
-        this.stats_.SetStat(this.statName_, currentStatValue + this.value_); //set stat
+        if (this.textObj_ === undefined) return;
+        this.textObj_.Text = "" + newValue;
     }
 }
 

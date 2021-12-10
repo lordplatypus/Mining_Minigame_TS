@@ -18,7 +18,8 @@ class ButtonManager
         if (this.canvas_ !== null) 
         {
             this.canvas_.addEventListener("mousemove", this.MouseMovement);
-            this.canvas_.addEventListener("mousedown", this.Click);
+            this.canvas_.addEventListener("mousedown", this.MouseDown);
+            this.canvas_.addEventListener("mouseup", this.MouseUp);
         }
     }
 
@@ -49,7 +50,8 @@ class ButtonManager
         if (this.canvas_ !== null)
         {
             this.canvas_.removeEventListener("mousemove", this.MouseMovement);
-            this.canvas_.removeEventListener("mousedown", this.Click);
+            this.canvas_.removeEventListener("mousedown", this.MouseDown);
+            this.canvas_.removeEventListener("mouseup", this.MouseUp);
         }
     }
 
@@ -73,21 +75,25 @@ class ButtonManager
         }
     }
 
-    private Click = (event: MouseEvent) =>
+    private MouseDown = (event: MouseEvent) =>
     {
-        // if (this.canvas_ === null || this.canvas_ === undefined) 
-        // {
-        //     console.log("Fail");
-        //     return;
-        // }
-
-        // var rectangle : DOMRect = this.canvas_.getBoundingClientRect();
-        // var mousePosition: Vector = new Vector(event.clientX - rectangle.left, event.clientY - rectangle.top);
-
         for (var i = 0; i < this.buttons_.length; i++)
         {
-            if (this.buttons_[i].Highlight) this.buttons_[i].Effect();
+            if (this.buttons_[i].Highlight) this.buttons_[i].Pressed = 1;
         }
+    }
+
+    private MouseUp = (event: MouseEvent) =>
+    {
+        var selectedButton: number = -1;
+        for (var i = 0; i < this.buttons_.length; i++)
+        {
+            if (this.buttons_[i].Pressed === 1 && this.buttons_[i].Highlight) selectedButton = i;
+            this.buttons_[i].Pressed = 0;
+        }
+        //running the line below directly in the loop would cause "undefined" issues.
+        //changing scene buttons would delete the list of buttons and then the loop would try to access the next button, resulting in an error.
+        if (selectedButton !== -1) this.buttons_[selectedButton].Effect();
     }
 }
 

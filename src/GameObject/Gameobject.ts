@@ -12,7 +12,7 @@ class Gameobject
     private isDead_: boolean = false;
 
     public Update(delta_time: number) {}
-    public TurnUpdate() {}
+    public TurnUpdate(turnsPassed: number) {}
     public Draw(main_ctx: CanvasRenderingContext2D | null, grid_ctx: CanvasRenderingContext2D | null) {}
     public DelayedDraw(main_ctx: CanvasRenderingContext2D | null, grid_ctx: CanvasRenderingContext2D | null) {}
     public Kill() {this.isDead_ = true;}

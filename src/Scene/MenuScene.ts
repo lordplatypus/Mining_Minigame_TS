@@ -75,9 +75,9 @@ class MenuScene implements Scene
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         this.bm_.Init();
         this.bm_.Add(new TransitionButton(this, "Transition", "Button", 0, new Vector(0, 0), new Vector(this.gridSize_ * 2, this.gridSize_), "Game", this.gridSize_ / 2,
-                    "serif", "#ff0000", "#444444", "#dddddd", "Game"));
+                    "serif", "#ff0000", "#444444", "./Button_Brown.png", "Game"));
         this.bm_.Add(new TransitionButton(this, "Transition", "Button", 0, new Vector(0, this.gridSize_ * 2), new Vector(this.gridSize_ * 2, this.gridSize_), "Shop", this.gridSize_,
-                    "serif", "#ff0000", "#444444", "#dddddd", "Shop"));
+                    "serif", "#ff0000", "#444444", "./Button_Brown.png", "Shop"));
     }
     
     public Update(delta_time: number) 
@@ -128,11 +128,11 @@ class MenuScene implements Scene
         this.bm_.Clear(); //remove buttons
     }
 
-    public TurnUpdate()
-    {//Turn progrssion
-        this.gom_.RemoveDead(); //delete dead objects
-        this.gom_.TurnUpdate(); //update every gameobject at turn progression
-    }
+    // public TurnUpdate()
+    // {//Turn progrssion
+    //     // this.gom_.RemoveDead(); //delete dead objects
+    //     // this.gom_.TurnUpdate(); //update every gameobject at turn progression
+    // }
 }
 
 export {MenuScene};

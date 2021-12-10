@@ -92,7 +92,9 @@ class Player extends Gameobject
             // if (dirt !== null) dirt.LowerLevel();
             this.RemoveDirt(ID);
     
-            this.scene_.TurnUpdate();
+            const area: number | undefined = this.stats_.GetStat("Area");
+            const turnsPassed: number = area === undefined? 1 : Math.ceil(Math.pow(area * 2 + 1, 2) * .75);
+            this.scene_.TurnUpdate(turnsPassed);
         }
         else
         {//clicked outside game field

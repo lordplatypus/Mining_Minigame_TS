@@ -51,9 +51,9 @@ class RightPanel extends Gameobject
     public Update(delta_time: number) 
     {}
 
-    public TurnUpdate() 
+    public TurnUpdate(turnsPassed: number) 
     {
-        this.turn_++;
+        this.turn_ += turnsPassed;
 
         this.crackNum_ = 640 * Math.floor(this.turn_ / Math.floor(this.maxTurns_ / 3));
         if (this.crackNum_ > 2 * 640) this.crackNum_ = 2 * 640;

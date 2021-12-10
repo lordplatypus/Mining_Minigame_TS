@@ -53,41 +53,44 @@ class TurnCounter extends Gameobject
     public Update(delta_time: number) 
     {}
 
-    public TurnUpdate() 
+    public TurnUpdate(turnsPassed: number) 
     {
-        // this.width_ -= this.shrink;
-        // if (this.width_ <= 0)
-        // {
-        //     var player: Gameobject | null = this.scene_.Search("Player", "Player", 0);
-        //     if (player !== null) player.Kill();
-        //     console.log(player);
-        // }
-
-        this.turnCount_++;
+        this.turnCount_ += turnsPassed;
         if (this.turnCount_ >= this.maxTurns_)
         {
             var player: Gameobject | null = this.scene_.Search("Player", "Player", 0);
             if (player !== null) player.Kill();
-            console.log(player);
         }
 
         if (this.turnCount_ >= this.turnsTillNextCrack_)
         {
-            this.turnsTillNextCrack_ += this.maxTurns_ / this.numOfSections_;
-            this.crackImgs_.push(new Image());
-            this.crackImgs_[this.crackImgs_.length - 1].src = "./Top_Panel_Crack.png";
+            const numOfCracksToAdd: number = Math.ceil((this.turnCount_ - this.turnsTillNextCrack_) / (this.maxTurns_ / this.numOfSections_));
 
-            if (this.isUp_) this.isUp_ = false;
-            else this.isUp_ = true;
+            for (var i = 0; i < numOfCracksToAdd; i++)
+            {
+                this.turnsTillNextCrack_ += this.maxTurns_ / this.numOfSections_;
+                this.crackImgs_.push(new Image());
+                this.crackImgs_[this.crackImgs_.length - 1].src = "./Top_Panel_Crack.png";
+
+                if (this.isUp_) this.isUp_ = false;
+                else this.isUp_ = true;
+            }
+
+            //exception...
+            //if the turncount hits maxcount, without going over, add one more crack to compelete the picture
+            if (this.turnCount_ === this.maxTurns_)
+            {
+                this.crackImgs_.push(new Image());
+                this.crackImgs_[this.crackImgs_.length - 1].src = "./Top_Panel_Crack.png";
+            }
         }
+
+        console.log(this);
     }
 
     public Draw(main_ctx: CanvasRenderingContext2D | null, grid_ctx: CanvasRenderingContext2D | null) 
     {
         if (main_ctx === null) return;
-        //TEST
-        // ctx.fillStyle = "#00ffff";
-        // ctx.fillRect(this.position_.x, this.position_.y, this.width_, this.height_);
 
         for (var i = 0; i < this.numOfSections_; i++)
         {
