@@ -86,11 +86,8 @@ class Player extends Gameobject
 
             mouseY -= this.mainCellSize_ * 2;
 
-            const ID: number = this.calcs_.ConvertWorldToID(new Vector(mouseX, mouseY), this.gridCellSize_, this.gridRows_, this.gridRows_);
-    
-            // var dirt: Dirt | null = <Dirt>this.scene_.Search("Dirt", "Dirt", ID);
-            // if (dirt !== null) dirt.LowerLevel();
-            this.RemoveDirt(ID);
+            const localMousePosition: Vector = this.calcs_.ConvertWorldToLocal(new Vector(mouseX, mouseY), this.gridCellSize_);
+            this.RemoveDirt(localMousePosition);
     
             const area: number | undefined = this.stats_.GetStat("Area");
             const turnsPassed: number = area === undefined? 1 : Math.ceil(Math.pow(area * 2 + 1, 2) * .75);
@@ -102,7 +99,7 @@ class Player extends Gameobject
         }
     }
 
-    private RemoveDirt(ID: number)
+    private RemoveDirt(localPosition: Vector)
     {
         const area: number | undefined = this.stats_.GetStat("Area");
         const power: number | undefined = this.stats_.GetStat("Power");
@@ -110,33 +107,40 @@ class Player extends Gameobject
 
         if (this.stats_.GetStat("Area") === 0)
         {
+            const ID: number = this.calcs_.ConvertLocalToID(localPosition, this.gridRows_, this.gridRows_);
             var dirt: Dirt | null = <Dirt>this.scene_.Search("Dirt", "Dirt", ID);
             if (dirt !== null) dirt.LowerLevel(power);
             return;
         }
 
-        ID = ID - this.gridRows_ - 1;
-        for (var y = 0; y < area + 2; y++)
+        const a: number = area * 2 + 1; //a*a area box (EX: an area of "2" makes a 5*5 box)
+        for (var y = localPosition.y - area; y <= localPosition.y + area; y++)
         {
-            for (var x = 0; x < area + 2; x++)
+            if (y < 0 || y > this.gridRows_ - 1) continue; //if out of bounds, continue
+            const powerY: number = a % (y - (localPosition.y - area) + 1); //Determine the power rating at Y
+            for (var x = localPosition.x - area; x <= localPosition.x + area; x++)
             {
-                var pow : number = 0;
-                if (x <= y) pow = (area + 2) % (x + 1);
-                else if (y < x) pow = (area + 2) % (y + 1);
+                if (x < 0 || x > this.gridRows_ - 1) continue; //if out of bounds, continue
+                const powerX: number = a % (x - (localPosition.x - area) + 1); //Determine the power rating at X
+                
+                var p: number = 0; //power
+                if (powerX <= powerY) p = powerX; //Take the lowest power rating
+                else p = powerY; 
+                p = power - (area - p); //lower power rating = less damage delt / current power - (area level - power rating)
+                if (p <= 0) p = 1; //power(damage) can't go below 1
 
-                const maxPower: number | undefined = this.stats_.GetStat("MaxPower");
-                if (maxPower !== undefined && pow > maxPower) pow = maxPower;
-
-                var dirt: Dirt | null = <Dirt>this.scene_.Search("Dirt", "Dirt", ID);
-                if (dirt !== null) dirt.LowerLevel(power);
-                ID++;
+                const ID: number = this.calcs_.ConvertLocalToID(new Vector(x, y), this.gridRows_, this.gridRows_); //convert the local x, y to ID
+                var dirt: Dirt | null = <Dirt>this.scene_.Search("Dirt", "Dirt", ID); //find the dirt at location "ID"
+                if (dirt !== null) dirt.LowerLevel(p); //lower the level of dirt by "p"
             }
-            ID = ID + this.gridRows_ - 3;
         }
 
-
-        // var dirt: Dirt | null = <Dirt>this.scene_.Search("Dirt", "Dirt", ID);
-        // if (dirt !== null) dirt.LowerLevel();
+        //Example: 5*5 power rating grid looks like:
+        //0 0 0 0 0
+        //0 1 1 1 0
+        //0 1 2 1 0
+        //0 1 1 1 0
+        //0 0 0 0 0
     }
 }
 

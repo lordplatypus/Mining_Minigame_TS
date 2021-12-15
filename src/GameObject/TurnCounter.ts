@@ -84,8 +84,6 @@ class TurnCounter extends Gameobject
                 this.crackImgs_[this.crackImgs_.length - 1].src = "./Top_Panel_Crack.png";
             }
         }
-
-        console.log(this);
     }
 
     public Draw(main_ctx: CanvasRenderingContext2D | null, grid_ctx: CanvasRenderingContext2D | null) 

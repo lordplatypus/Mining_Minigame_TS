@@ -4,6 +4,7 @@ import { Calculations } from "../Calculations";
 import { Vector } from "../Vector";
 import { GameobjectManager } from "../GameObject/GameobjectManager";
 import { Gameobject } from "../GameObject/Gameobject";
+import { ParticleManager } from "../Particles/ParticleManager";
 //Gameobjects
 import { Text } from "../GameObject/Text";
 import { FadingText } from "../GameObject/FadingText";
@@ -24,6 +25,7 @@ class GameScene implements Scene
     private calcs_: Calculations;
     public gom_: GameobjectManager;
     public bm_: ButtonManager;
+    private pm_: ParticleManager;
     //Main Canvas
     private mainCanvas_: HTMLCanvasElement | null;
     private canvasSize_: number; //width and height of the canvas (perfect square)
@@ -42,6 +44,7 @@ class GameScene implements Scene
         this.calcs_ = new Calculations();
         this.gom_ = new GameobjectManager();
         this.bm_ = new ButtonManager();
+        this.pm_ = new ParticleManager(this);
 
         this.mainCanvas_ = <HTMLCanvasElement>document.getElementById("main_canvas");
         this.canvasSize_ = 0;
@@ -220,14 +223,16 @@ class GameScene implements Scene
                 }
             }
             const treasureID: number = this.calcs_.ConvertLocalToID(new Vector(x, y), this.gridRows_, this.gridRows_);
-            this.Add(new Coin(this.game_.GetStats(), this, "Coin", "Coin", treasureID, new Vector(this.gridCellSize_*x, this.gridCellSize_*y), new Vector(this.gridCellSize_, this.gridCellSize_), this.gridCellSize_, this.gridRows_, this.gridRows_));
+            this.Add(new Coin(this.game_.GetStats(), this, "Coin", "Coin", treasureID, new Vector(this.gridCellSize_*x, this.gridCellSize_*y), new Vector(this.gridCellSize_, this.gridCellSize_), this.mainCellSize_, this.gridCellSize_, this.gridRows_, this.gridRows_));
             occupied.push(new Vector(x, y));
             console.log(x);
             console.log(y);
             console.log(treasureID);
         }
 
-        this.Add(new FadingText("Fading", "Text", 0, new Vector(0, this.gridCellSize_), 32, numOfTreasure + " Treasures", "#ff0000"));
+        //this.Add(new FadingText("Fading", "Text", 0, new Vector(0, this.gridCellSize_), 32, numOfTreasure + " Treasures", "#ff0000"));
+        if (this.mainCanvas_ === null) return
+        this.pm_.FadingText(new Vector(this.mainCanvas_.width / 2, this.mainCanvas_.height / 2), numOfTreasure + " Treasures", this.mainCellSize_);
     }
 
     private Dirt()

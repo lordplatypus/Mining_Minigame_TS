@@ -4,18 +4,21 @@ import { Stats } from "../Stats";
 import { Vector } from "../Vector";
 import { Calculations } from "../Calculations";
 import { Text } from "../GameObject/Text";
+import { ParticleManager } from "../Particles/ParticleManager";
 
 class Coin extends Gameobject
 {
     private stats_: Stats;
     private scene_: Scene;
-    private gridSize_: number;
+    private mainCellSize_: number;
+    private gridCellSize_: number;
     private rows_: number;
     private columns_: number;
     private calcs_: Calculations;
     private done_: boolean;
+    private pm_: ParticleManager;
 
-    constructor(stats: Stats, scene: Scene, name: string, tag: string, ID: number, position: Vector, size: Vector, gridSize: number, rows: number, columns: number)
+    constructor(stats: Stats, scene: Scene, name: string, tag: string, ID: number, position: Vector, size: Vector, mainCellSize: number, gridCellSize: number, rows: number, columns: number)
     {
         super();
         this.stats_ = stats;
@@ -26,12 +29,15 @@ class Coin extends Gameobject
         this.position_ = new Vector(position.x, position.y);
         this.width_ = size.x;
         this.height_ = size.y;
-        this.gridSize_ = gridSize;
+        this.mainCellSize_ = mainCellSize;
+        this.gridCellSize_ = gridCellSize;
         this.rows_ = rows;
         this.columns_ = columns;
 
         this.calcs_ = new Calculations();
         this.done_ = false;
+
+        this.pm_ = new ParticleManager(scene);
     }
 
     public Update(delta_time: number) 
@@ -41,7 +47,7 @@ class Coin extends Gameobject
     {
         if (this.done_) return;
 
-        var localPosition : Vector = this.calcs_.ConvertWorldToLocal(new Vector(this.position_.x, this.position_.y), this.gridSize_);
+        var localPosition : Vector = this.calcs_.ConvertWorldToLocal(new Vector(this.position_.x, this.position_.y), this.gridCellSize_);
         if (localPosition === null) return;
         var ID : number = this.calcs_.ConvertLocalToID(localPosition, this.rows_, this.columns_);
         if (ID === null) return;
@@ -54,6 +60,9 @@ class Coin extends Gameobject
             this.stats_.SetStat("Money", currentMoney); //set money
             var moneyText: Text = <Text>this.scene_.Search("Text", "Text", 0); //grab money display text
             if (moneyText !== null) moneyText.Text = "Money: " + currentMoney; //display money amount
+
+            const textPosition: Vector = this.calcs_.ConvertGridToMain(this.position_, new Vector(0, this.mainCellSize_ * 2), new Vector(this.mainCellSize_ * 8, this.mainCellSize_ * 8), new Vector(this.gridCellSize_ * this.columns_, this.gridCellSize_ * this.rows_));
+            this.pm_.RaisingText(textPosition, "+1", this.gridCellSize_);
             this.done_ = true; //done, don't need to update anymore
         }
     }

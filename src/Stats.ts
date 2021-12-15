@@ -11,7 +11,7 @@ class Stats
 
         //Upgrades - things the player collects or buys
         this.stats_.set("Money", 10); //player money
-        this.stats_.set("MaxPower", 1); //max tool power the player can select
+        this.stats_.set("MaxPower", 2); //max tool power the player can select
         this.stats_.set("MaxArea", 1); //max tool area the player can select
         this.stats_.set("MaxTurns", 25); //how many turns untill the round ends
         this.stats_.set("Rows", 10); //# of columns in the dirt grid - every 5 = 2 more base treasure && 3 more dirt layer possible

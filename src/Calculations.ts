@@ -58,6 +58,18 @@ class Calculations
     {
         return this.ConvertLocalToWorld(this.ConvertIDToLocal(ID, columns), gridSize);
     }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    //Converting to/from the grid canvas to/from the main canvas
+    //grid canvas size is predetermined (it will always be (32 * columns, 32 * rows)))
+    //main canvas size is determined based on browser window size, thus it varies
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    public ConvertGridToMain(position: Vector, gridWorldPosition: Vector, gridWorldSize: Vector, gridLocalSize: Vector): Vector
+    {
+        const x: number = (gridWorldSize.x / gridLocalSize.x) * position.x + gridWorldPosition.x;
+        const y: number = (gridWorldSize.y / gridLocalSize.y) * position.y + gridWorldPosition.y;
+        return new Vector(x, y);
+    }
 }
 
 export {Calculations};

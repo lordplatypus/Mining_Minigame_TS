@@ -3,131 +3,85 @@ import { Vector } from "../Vector";
 
 class Particle extends Gameobject
 {
-    private img_: HTMLImageElement;
-    private lifespan_: number; //how long the particle will last(パーティクルの寿命)
-    private age_: number; //current age of particle(パーティクルの歳)
-    private progressSpeed_: number;
-    private scale_: Vector; //particle scale(拡大率)
-    private startScale_: Vector; //particle starting scale(開始の拡大率)
-    private endScale_: Vector; //particle ending scale(終了の拡大率)
-    private velocity_: Vector;
-    private force_: Vector;
-    private damp_: number; //dampen the particles velocity(速度のブレーキ)
-    private angle_: number; //angle(角度)
-    private angularVelocity_: number; //angle velocity(向きの速度)
-    private angularDamp_: number; //angle damp(角度の速度のブレーキ)
-    private red_: number; //red color(赤)
-    private green_: number; //green color(緑)
-    private blue_: number; //blue(青)
-    private alpha_: number; //alpha(アルファ)
-    private startAlpha_: number; //particles starting alpha(開始のアルファ)
-    private endAlpha_: number; //particles ending alpha(終了のアルファ)
-
-    //TEST
-    private tempCanvas_: HTMLCanvasElement | null;
-    private tctx_: CanvasRenderingContext2D | null;
-
-    constructor(imgSrc: string, position: Vector, 
-                lifespan?: number, progressSpeed?: number,
-                size?: Vector, startScale?: Vector, endScale?: Vector,
-                velocity?: Vector, force?: Vector, damp?: number,
-                angle?: number, angularVelocity?: number, angularDamp?: number,
-                red?: number, green?: number, blue?: number, startAlpha?: number, endAlpha?: number)
-                
-    {
-        super();
-        this.img_ = new Image();
-        this.img_.src = imgSrc;
-        this.position_ = position;
-        this.lifespan_ = lifespan === undefined? 1 : lifespan;
-        this.age_ = 0;
-        this.progressSpeed_ = progressSpeed === undefined? 1 : progressSpeed;
-        this.width_ = size === undefined? this.img_.naturalWidth : size.x;
-        this.height_ = size === undefined? this.img_.naturalHeight : size?.y;
-        this.scale_ = startScale === undefined? new Vector(1, 1) : startScale;
-        this.startScale_ = startScale === undefined? new Vector(1, 1) : startScale;
-        this.endScale_ = endScale === undefined? new Vector(1, 1) : endScale;
-        this.velocity_ = velocity === undefined? new Vector(0, 0) : velocity;
-        this.force_ = force === undefined? new Vector(0, 0) : force;
-        this.damp_ = damp === undefined? 1 : damp; 
-        this.angle_ = angle === undefined? 0 : angle;
-        this.angularVelocity_ = angularVelocity === undefined? 0 : angularVelocity;
-        this.angularDamp_ = angularDamp === undefined? 1 : angularDamp;
-        this.red_ = red === undefined? 255 : red;
-        this.green_ = green === undefined? 255 : green;
-        this.blue_ = blue === undefined? 255 : blue ;
-        this.alpha_ = startAlpha === undefined? 1 : startAlpha;
-        this.startAlpha_ = startAlpha === undefined? 1 : startAlpha;
-        this.endAlpha_ = endAlpha === undefined? 1 : endAlpha;
-
-        //TEST
-        this.tempCanvas_ = document.createElement("canvas");
-        this.tempCanvas_.id = "_" + this.velocity_.x;
-        this.tempCanvas_.width = this.width_ * this.scale_.x;
-        this.tempCanvas_.height = this.height_ * this.scale_.y;
-        if (this.tempCanvas_ !== null) this.tctx_ = this.tempCanvas_.getContext("2d");
-        else this.tctx_ = null;
-    }
+    //protected img_: HTMLImageElement;
+    protected lifespan_: number = 0; //how long the particle will last(パーティクルの寿命)
+    protected age_: number = 0; //current age of particle(パーティクルの歳)
+    protected progressSpeed_: number = 0;
+    protected progressRate_: number = 0;
+    protected scale_: Vector = new Vector(0, 0); //particle scale(拡大率)
+    protected startScale_: Vector = new Vector(0, 0); //particle starting scale(開始の拡大率)
+    protected endScale_: Vector = new Vector(0, 0); //particle ending scale(終了の拡大率)
+    protected velocity_: Vector = new Vector(0, 0);
+    protected force_: Vector = new Vector(0, 0);
+    protected damp_: number = 0; //dampen the particles velocity(速度のブレーキ)
+    protected angle_: number = 0; //angle(角度)
+    protected rad_: number = 0 //radians
+    protected translate_: number = 0; //translate the canvas so that it can be rotated (remember to translate back after rotating)
+    protected angularVelocity_: number = 0; //angle velocity(向きの速度)
+    protected angularDamp_: number = 0; //angle damp(角度の速度のブレーキ)
+    protected red_: number = 0; //red color(赤)
+    protected green_: number = 0; //green color(緑)
+    protected blue_: number = 0; //blue(青)
+    protected alpha_: number = 0; //alpha(アルファ)
+    protected startAlpha_: number = 0; //particles starting alpha(開始のアルファ)
+    protected endAlpha_: number = 0; //particles ending alpha(終了のアルファ)
 
     public Update(delta_time: number) 
     {
-        this.age_ += delta_time;
+        this.UpdateAge(delta_time);
+        this.UpdateProgressRate();
+        this.UpdateScale();
+        this.UpdateVelocity(delta_time);
+        this.UpdatePosition(delta_time);
+        this.UpdateAngle(delta_time);
+        this.UpdateAlpha();
+    }
 
-        if (this.age_ >= this.lifespan_)
-        {
-            this.Kill();
-            return;
-        }
-    
-        const progressRate = (this.age_ / this.lifespan_) * this.progressSpeed_;
-        this.scale_ = this.LerpVector(this.startScale_, this.endScale_, progressRate);
-    
+    public UpdateAge(delta_time: number)
+    {
+        this.age_ += delta_time;
+        if (this.age_ >= this.lifespan_) this.Kill();
+    }
+
+    public UpdateProgressRate()
+    {
+        this.progressRate_ = (this.age_ / this.lifespan_) * this.progressSpeed_;
+    }
+
+    public UpdateScale()
+    {
+        this.scale_ = this.LerpVector(this.startScale_, this.endScale_, this.progressRate_);
+    }
+
+    public UpdateVelocity(delta_time: number)
+    {
         var vx: number = this.velocity_.x + this.force_.x * delta_time;
         var vy: number = this.velocity_.y + this.force_.y * delta_time;
     
         vx *= Math.pow(this.damp_, delta_time * 60);
         vy *= Math.pow(this.damp_, delta_time * 60);
+
         this.velocity_ = new Vector(vx, vy);
-    
+    }
+
+    public UpdatePosition(delta_time: number)
+    {
         const x: number = this.position_.x + this.velocity_.x * delta_time;
         const y: number = this.position_.y + this.velocity_.y * delta_time;
         this.position_ = new Vector(x, y);
-    
+    }
+
+    public UpdateAngle(delta_time: number)
+    {
         //angularVelocity *= angularDamp;
         this.angle_ += this.angularVelocity_ * delta_time;
-    
-        this.alpha_ = this.LerpNumber(this.startAlpha_, this.endAlpha_, progressRate);
+        this.rad_ = this.angle_ * Math.PI / 180;
+        this.translate_ = this.position_.x + (this.width_ * this.scale_.x) / 2, this.position_.y + (this.height_ * this.scale_.y) / 2;
     }
 
-    public Draw(ctx: CanvasRenderingContext2D | null) 
+    public UpdateAlpha()
     {
-        if (ctx === null) return;
-    }
-
-    public DelayedDraw(ctx: CanvasRenderingContext2D | null) 
-    {
-        if (ctx === null || this.tctx_ === null || this.tempCanvas_ === null) return;
-
-        //this.tctx_.save();
-        //tctx.scale(this.scale_.x, this.scale_.y);
-        //this.tctx_.fillStyle = "rgba(234, 208, 168, 1)";
-        this.tctx_.fillStyle = "rgba(" + this.red_ + ", " + this.green_ + ", " + this.blue_ + ", " + this.alpha_ + ")";
-        this.tctx_.fillRect(0, 0, this.width_, this.height_);
-        this.tctx_.globalCompositeOperation = "destination-in";
-        this.tctx_.drawImage(this.img_, 0, 0, this.img_.naturalWidth, this.img_.naturalHeight, 0, 0, this.width_, this.height_);
-        //this.tctx_.restore();
-
-        ctx.save();
-        ctx.translate(this.position_.x + (this.width_ * this.scale_.x) / 2, this.position_.y + (this.height_ * this.scale_.y) / 2);
-        ctx.rotate(this.angle_ * Math.PI / 180);
-        ctx.translate(-(this.position_.x + (this.width_ * this.scale_.x) / 2), -(this.position_.y + (this.height_ * this.scale_.y) / 2));
-        ctx.drawImage(this.tempCanvas_, 0, 0, this.tempCanvas_.width, this.tempCanvas_.height, this.position_.x, this.position_.y, this.width_ * this.scale_.x, this.height_ * this.scale_.x);
-        ctx.restore();
-    }
-
-    public Deconstructor()
-    {
-        // this.tempCanvas_?.remove(); //Not needed? since tempcanvas wasn't added to any parent it should go out of scope when this is Killed?
+        this.alpha_ = this.LerpNumber(this.startAlpha_, this.endAlpha_, this.progressRate_);
     }
 
     public LerpNumber(a: number, b: number, t: number) : number
@@ -140,6 +94,11 @@ class Particle extends Gameobject
         const x = (1 - t) * a.x + t * b.x;
         const y = (1 - t) * a.y + t * b.y;
         return new Vector(x, y);
+    }
+
+    public Deconstructor()
+    {
+        // this.tempCanvas_?.remove(); //Not needed? since tempcanvas wasn't added to any parent it should go out of scope when this is Killed?
     }
 }
 
