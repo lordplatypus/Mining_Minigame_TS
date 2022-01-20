@@ -7,7 +7,6 @@ import { Gameobject } from "../GameObject/Gameobject";
 import { ParticleManager } from "../Particles/ParticleManager";
 //Gameobjects
 import { Text } from "../GameObject/Text";
-import { FadingText } from "../GameObject/FadingText";
 import { Background } from "../GameObject/Background";
 import { Dirt } from "../GameObject/Dirt";
 import { Player } from "../GameObject/Player";
@@ -96,31 +95,33 @@ class GameScene implements Scene
         //FOR THE MAIN CANVAS
 
         //Return Button
-        this.bm_.Add(new TransitionButton(this, "Transition", "Button", 0, new Vector(this.mainCellSize_ * (this.mainRows_ - 2), (this.mainCellSize_ * this.mainRows_) - this.mainCellSize_), new Vector(this.mainCellSize_ * 2, this.mainCellSize_), "Return", 32,
-                    "serif", "#ff0000", "#444444", "./Button_Brown.png", "Menu"));
+        this.bm_.Add(new TransitionButton(this, "Transition", "Button", 0, new Vector(this.mainCellSize_ * (this.mainRows_ - 2), (this.mainCellSize_ * this.mainRows_) - this.mainCellSize_), 
+                     new Vector(this.mainCellSize_, this.mainCellSize_), "./Button_Return.png", "Menu"));
 
         //Area <> buttons && text
-        const areaText: Text = new Text("Text", "Text", 1, new Vector(this.mainCellSize_ * (this.mainRows_ - 2), this.mainCellSize_ * 3), 16, "" + this.game_.GetStats().GetStat("Area"), "#ff0000");
+        const areaText: Text = new Text("Area_Text", "Text", 1, new Vector(this.mainCellSize_ * (this.mainRows_ - 2), this.mainCellSize_ * 3), 16, "Area: ", "" + this.game_.GetStats().GetStat("Area"), "serif", "#ff0000");
         this.Add(areaText);
         const maxArea: number | undefined = this.game_.GetStats().GetStat("MaxArea");
-        this.bm_.Add(new UpdateStatButton(this.game_.GetStats(), "Stat", "Button", 0, new Vector(this.mainCellSize_ * (this.mainRows_ - 2), this.mainCellSize_ * 4), new Vector(this.mainCellSize_ / 2, this.mainCellSize_ / 2), "<", 32,
-                    "serif", "#ff0000", "#444444", "./Button_Red.png", "Area", -1, 0, maxArea === undefined ? 0 : maxArea, areaText));
-        this.bm_.Add(new UpdateStatButton(this.game_.GetStats(), "Stat", "Button", 0, new Vector(this.mainCellSize_ * (this.mainRows_ - 1), this.mainCellSize_ * 4), new Vector(this.mainCellSize_ / 2, this.mainCellSize_ / 2), ">", 32,
-                    "serif", "#ff0000", "#444444", "./Button_Blue.png", "Area", 1, 0, maxArea === undefined ? 0 : maxArea, areaText));
+        this.bm_.Add(new UpdateStatButton(this.game_.GetStats(), "Stat", "Button", 0, new Vector(this.mainCellSize_ * (this.mainRows_ - 2), this.mainCellSize_ * 4), 
+                     new Vector(this.mainCellSize_ / 2, this.mainCellSize_ / 2), "./Button_Red.png", "Area", -1, 0, maxArea === undefined ? 0 : maxArea, areaText));
+        this.bm_.Add(new UpdateStatButton(this.game_.GetStats(), "Stat", "Button", 0, new Vector(this.mainCellSize_ * (this.mainRows_ - 1), this.mainCellSize_ * 4), 
+                     new Vector(this.mainCellSize_ / 2, this.mainCellSize_ / 2), "./Button_Blue.png", "Area", 1, 0, maxArea === undefined ? 0 : maxArea, areaText));
 
         //Power <> buttons && text
+        const powerText: Text = new Text("Power_Text", "Text", 2, new Vector(this.mainCellSize_ * (this.mainRows_ - 2), this.mainCellSize_ * 5), 16, "Power: ", "" + this.game_.GetStats().GetStat("Power"), "serif", "#ff0000");
+        this.Add(powerText);
         const maxPower: number | undefined = this.game_.GetStats().GetStat("MaxPower");
-        this.bm_.Add(new UpdateStatButton(this.game_.GetStats(), "Stat", "Button", 0, new Vector(this.mainCellSize_ * (this.mainRows_ - 2), this.mainCellSize_ * 6), new Vector(this.mainCellSize_ / 2, this.mainCellSize_ / 2), "<", 32,
-                    "serif", "#ff0000", "#444444", "./Button_Red.png", "Power", -1, 1, maxPower === undefined ? 0 : maxPower));
-        this.bm_.Add(new UpdateStatButton(this.game_.GetStats(), "Stat", "Button", 0, new Vector(this.mainCellSize_ * (this.mainRows_ - 1), this.mainCellSize_ * 6), new Vector(this.mainCellSize_ / 2, this.mainCellSize_ / 2), ">", 32,
-                    "serif", "#ff0000", "#444444", "./Button_Blue.png", "Power", 1, 1, maxPower === undefined ? 0 : maxPower));
+        this.bm_.Add(new UpdateStatButton(this.game_.GetStats(), "Stat", "Button", 0, new Vector(this.mainCellSize_ * (this.mainRows_ - 2), this.mainCellSize_ * 6), 
+                                          new Vector(this.mainCellSize_ / 2, this.mainCellSize_ / 2), "./Button_Red.png", "Power", -1, 1, maxPower === undefined ? 0 : maxPower, powerText));
+        this.bm_.Add(new UpdateStatButton(this.game_.GetStats(), "Stat", "Button", 0, new Vector(this.mainCellSize_ * (this.mainRows_ - 1), this.mainCellSize_ * 6), 
+                                          new Vector(this.mainCellSize_ / 2, this.mainCellSize_ / 2), "./Button_Blue.png", "Power", 1, 1, maxPower === undefined ? 0 : maxPower, powerText));
 
         
         const maxTurns: number | undefined = this.game_.GetStats().GetStat("MaxTurns");
         this.Add(new TurnCounter(this, "Counter", "Counter", 0, new Vector(0, 0), new Vector(this.mainCellSize_ * (this.mainRows_ - 2), this.mainCellSize_ * 2), this.mainCellSize_, maxTurns === undefined ? 25 : maxTurns));
         //Set up right panel
         this.Add(new RightPanel("Right", "Panel", 0, new Vector(this.mainCellSize_ * (this.mainRows_ - 2), 0), new Vector(this.mainCellSize_ * 2, this.mainCellSize_ * this.mainRows_), this.mainCellSize_, maxTurns === undefined ? 25 : maxTurns));
-        this.Add(new Text("Text", "Text", 0, new Vector(this.mainCellSize_ * (this.mainRows_ - 2), this.mainCellSize_), 16, "Money: " + this.game_.GetStats().GetStat("Money"), "#ff0000"));
+        this.Add(new Text("Text", "Text", 0, new Vector(this.mainCellSize_ * (this.mainRows_ - 2), this.mainCellSize_), 16, "Money: ", "" + this.game_.GetStats().GetStat("Money"), "serif", "#ff0000"));
     }
     
     public Update(delta_time: number) 
@@ -215,8 +216,8 @@ class GameScene implements Scene
             while (!done)
             {
                 done = true;
-                x = Math.floor(Math.random() * (this.gridRows_ - 2));
-                y = Math.floor(Math.random() * (this.gridRows_ - 2)) + 2;
+                x = Math.floor(Math.random() * (this.gridRows_));
+                y = Math.floor(Math.random() * (this.gridRows_ ));
                 for (var j = 0; j < occupied.length; j++)
                 {//if the rand position was already used try again
                     if (x === occupied[j].x && y === occupied[j].y) done = false;

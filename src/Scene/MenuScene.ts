@@ -26,8 +26,8 @@ class MenuScene implements Scene
         this.game_ = game;
         this.gom_ = new GameobjectManager();
         this.bm_ = new ButtonManager();
-        this.columns_ = 10;
-        this.rows_ = 10;
+        this.columns_ = 9;
+        this.rows_ = 9;
         this.gridSize_ = 32;
         this.canvasSize_ = new Vector(this.columns_ * this.gridSize_, this.rows_ * this.gridSize_);
 
@@ -74,10 +74,8 @@ class MenuScene implements Scene
         //BUTTON SETUP
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         this.bm_.Init();
-        this.bm_.Add(new TransitionButton(this, "Transition", "Button", 0, new Vector(0, 0), new Vector(this.gridSize_ * 2, this.gridSize_), "Game", this.gridSize_ / 2,
-                    "serif", "#ff0000", "#444444", "./Button_Brown.png", "Game"));
-        this.bm_.Add(new TransitionButton(this, "Transition", "Button", 0, new Vector(0, this.gridSize_ * 2), new Vector(this.gridSize_ * 2, this.gridSize_), "Shop", this.gridSize_,
-                    "serif", "#ff0000", "#444444", "./Button_Brown.png", "Shop"));
+        this.bm_.Add(new TransitionButton(this, "Transition", "Button", 0, new Vector(this.gridSize_ * 4, this.gridSize_ * 3), new Vector(this.gridSize_, this.gridSize_), "./Button_Pickaxe.png", "Game"));
+        this.bm_.Add(new TransitionButton(this, "Transition", "Button", 1, new Vector(this.gridSize_ * 4, this.gridSize_ * 5), new Vector(this.gridSize_, this.gridSize_), "./Button_Coin.png", "Shop"));
     }
     
     public Update(delta_time: number) 

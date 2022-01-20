@@ -90,7 +90,11 @@ class Player extends Gameobject
             this.RemoveDirt(localMousePosition);
     
             const area: number | undefined = this.stats_.GetStat("Area");
-            const turnsPassed: number = area === undefined? 1 : Math.ceil(Math.pow(area * 2 + 1, 2) * .75);
+            const power: number | undefined = this.stats_.GetStat("Power");
+            //calculate the number of turns to progress
+            //Area - increases turn count by Math.ceil(Math.pow(area * 2 + 1, 2) * .75)
+            //Power - increases the turn count by Area * power level
+            const turnsPassed: number = area === undefined || power === undefined? 1 : Math.ceil(Math.pow(area * 2 + 1, 2) * .75) * power;
             this.scene_.TurnUpdate(turnsPassed);
         }
         else

@@ -75,12 +75,9 @@ class ShopScene implements Scene
         //BUTTON SETUP
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         this.bm_.Init();
-        this.bm_.Add(new TransitionButton(this, "Transition", "Button", 0, new Vector(0, 0), new Vector(128, 32), "Menu", 32,
-                    "serif", "#ff0000", "#444444", "./Button_Brown.png", "Menu"));
-        this.bm_.Add(new BuyButton(this.game_.GetStats(), "MaxPower", "Button", 1, new Vector(0, 64), new Vector(256, 32), "Max Power +1 : 1 gold", 32,
-                    "serif", "#ff0000", "#444444", "./Button_Brown.png", "MaxPower", 1, 1));
-        this.bm_.Add(new BuyButton(this.game_.GetStats(), "MaxTurns", "Button", 1, new Vector(0, 128), new Vector(256, 32), "Turns +1 : 1 gold", 32,
-                    "serif", "#ff0000", "#444444", "./Button_Brown.png", "MaxTurns", 1, 1));
+        this.bm_.Add(new TransitionButton(this, "Transition", "Button", 0, new Vector(0, 0), new Vector(this.gridSize_, this.gridSize_), "./Button_Return.png", "Menu"));
+        this.bm_.Add(new BuyButton(this.game_.GetStats(), "MaxPower", "Button", 1, new Vector(0, this.gridSize_ * 2), new Vector(this.gridSize_, this.gridSize_), "./Button_Brown.png", "MaxPower", 1, 1));
+        this.bm_.Add(new BuyButton(this.game_.GetStats(), "MaxTurns", "Button", 2, new Vector(0, this.gridSize_ * 4), new Vector(this.gridSize_, this.gridSize_), "./Button_Brown.png", "MaxTurns", 1, 1));
     }
     
     public Update(delta_time: number) 

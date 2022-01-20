@@ -30,7 +30,7 @@ class Background extends Gameobject
         // ctx.fillStyle = "#402905";
         // ctx.fillRect(this.position_.x, this.position_.y, this.width_, this.height_);
 
-        grid_ctx.drawImage(this.img_, 0, 0, 320, this.img_.naturalHeight, 
+        grid_ctx.drawImage(this.img_, 0, 0, 320, 320, 
             this.position_.x, this.position_.y, this.width_, this.height_);
     }
 }

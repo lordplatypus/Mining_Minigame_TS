@@ -1,16 +1,18 @@
 import { Button } from "./Button";
 import { Stats } from "../Stats";
 import { Vector } from "../Vector";
+import { Text } from "../GameObject/Text";
 
 class BuyButton extends Button
 {
     private stats_: Stats;
     private statName_: string;
     private cost_: number;
-    private value_: number
+    private value_: number;
+    private textObj_: Text | undefined; //optional, if there is text displayed, this will give access to that text
 
-    constructor(stats: Stats, name: string, tag: string, ID: number, position: Vector, size: Vector, buttonText: string, textSize: number, 
-                font: string, textColor: string, highlightTextColor: string, imgPath: string, statName: string, value: number, cost: number)
+    constructor(stats: Stats, name: string, tag: string, ID: number, position: Vector, size: Vector, 
+                imgPath: string, statName: string, value: number, cost: number, textObj?: Text)
     {
         super();
         this.stats_ = stats;
@@ -19,17 +21,18 @@ class BuyButton extends Button
         this.ID_ = ID;
         this.position_ = new Vector(position.x, position.y);
         this.size_ = size;
-        this.text_ = buttonText;
-        this.textSize_ = textSize;
-        this.font_ = font;
-        this.textColor_ = textColor;
-        this.highlightTextColor_ = highlightTextColor;
+        // this.text_ = buttonText;
+        // this.textSize_ = textSize;
+        // this.font_ = font;
+        // this.textColor_ = textColor;
+        // this.highlightTextColor_ = highlightTextColor;
         this.img_ = new Image();
         this.img_.src = imgPath;
 
         this.statName_ = statName;
         this.cost_ = cost;
         this.value_ = value;
+        this.textObj_ = textObj;
     }
 
     public Effect()

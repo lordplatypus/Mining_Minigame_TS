@@ -29,7 +29,7 @@ class Dirt extends Gameobject
     {
         if (grid_ctx === null) return;
 
-        grid_ctx.drawImage(this.img_, this.level_ * 320, 0, 320, this.img_.naturalHeight, 
+        grid_ctx.drawImage(this.img_, (this.level_ % 3) * 320, Math.floor(this.level_ / 3) * 320, 320, 320, 
             this.position_.x, this.position_.y, this.width_, this.height_);
     }
 

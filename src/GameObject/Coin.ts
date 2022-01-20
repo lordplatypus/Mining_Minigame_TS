@@ -59,7 +59,7 @@ class Coin extends Gameobject
             currentMoney++; //add money
             this.stats_.SetStat("Money", currentMoney); //set money
             var moneyText: Text = <Text>this.scene_.Search("Text", "Text", 0); //grab money display text
-            if (moneyText !== null) moneyText.Text = "Money: " + currentMoney; //display money amount
+            if (moneyText !== null) moneyText.SUFFIX = "" + currentMoney; //display money amount
 
             const textPosition: Vector = this.calcs_.ConvertGridToMain(this.position_, new Vector(0, this.mainCellSize_ * 2), new Vector(this.mainCellSize_ * 8, this.mainCellSize_ * 8), new Vector(this.gridCellSize_ * this.columns_, this.gridCellSize_ * this.rows_));
             this.pm_.RaisingText(textPosition, "+1", this.gridCellSize_);

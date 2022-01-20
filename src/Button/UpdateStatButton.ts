@@ -12,8 +12,8 @@ class UpdateStatButton extends Button
     private maxValue_: number;
     private textObj_: Text | undefined; //optional, if there is text displayed, this will give access to that text
 
-    constructor(stats: Stats, name: string, tag: string, ID: number, position: Vector, size: Vector, buttonText: string, textSize: number, font: string, 
-                textColor: string, highlightTextColor: string, imgPath: string, statName: string, value: number, minValue: number, maxValue: number, textObj?: Text)
+    constructor(stats: Stats, name: string, tag: string, ID: number, position: Vector, size: Vector, 
+                imgPath: string, statName: string, value: number, minValue: number, maxValue: number, textObj?: Text)
     {
         super();
         this.stats_ = stats;
@@ -22,11 +22,11 @@ class UpdateStatButton extends Button
         this.ID_ = ID;
         this.position_ = new Vector(position.x, position.y);
         this.size_ = size;
-        this.text_ = buttonText;
-        this.textSize_ = textSize;
-        this.font_ = font;
-        this.textColor_ = textColor;
-        this.highlightTextColor_ = highlightTextColor;
+        // this.text_ = buttonText;
+        // this.textSize_ = textSize;
+        // this.font_ = font;
+        // this.textColor_ = textColor;
+        // this.highlightTextColor_ = highlightTextColor;
         this.img_ = new Image();
         this.img_.src = imgPath;
 
@@ -49,7 +49,7 @@ class UpdateStatButton extends Button
         this.stats_.SetStat(this.statName_, newValue); //set stat
 
         if (this.textObj_ === undefined) return;
-        this.textObj_.Text = "" + newValue;
+        this.textObj_.SUFFIX = "" + newValue;
     }
 }
 
