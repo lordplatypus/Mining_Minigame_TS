@@ -10,7 +10,7 @@ class Stats
         
 
         //Upgrades - things the player collects or buys
-        this.stats_.set("Money", 10); //player money
+        this.stats_.set("Money", 100); //player money
         this.stats_.set("MaxPower", 2); //max tool power the player can select
         this.stats_.set("MaxArea", 1); //max tool area the player can select
         this.stats_.set("MaxTurns", 25); //how many turns untill the round ends

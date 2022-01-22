@@ -60,6 +60,9 @@ class GameScene implements Scene
 
     public Init() 
     {
+        const rows = this.game_.GetStats().GetStat("Rows");
+        this.gridRows_ = rows !== undefined ? rows : 0;
+
         this.bm_.Init();
 
         //calculate the size of a single cell in the main grid using the window size

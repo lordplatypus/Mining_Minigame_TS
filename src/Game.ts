@@ -4,6 +4,7 @@ import { Stats } from "./Stats";
 import { GameScene } from "./Scene/GameScene";
 import { MenuScene } from "./Scene/MenuScene";
 import { ShopScene } from "./Scene/ShopScene";
+import { LevelSelectScene } from "./Scene/LevelSelectScene";
 
 
 class Game
@@ -27,6 +28,7 @@ class Game
         this.scenes_.set("Game", new GameScene(this));
         this.scenes_.set("Menu", new MenuScene(this));
         this.scenes_.set("Shop", new ShopScene(this));
+        this.scenes_.set("LevelSelect", new LevelSelectScene(this));
     }
 
     public ChangeScene(sceneName: string)

@@ -1,6 +1,7 @@
 import { Button } from "./Button";
 import { Scene } from "../Scene/Scene";
 import { Vector } from "../Vector";
+import { Stats } from "../Stats";
 
 class TransitionButton extends Button
 {
@@ -17,11 +18,6 @@ class TransitionButton extends Button
         this.ID_ = ID;
         this.position_ = new Vector(position.x, position.y);
         this.size_ = size;
-        // this.text_ = buttonText;
-        // this.textSize_ = textSize;
-        // this.font_ = font;
-        // this.textColor_ = textColor;
-        // this.highlightTextColor_ = highlightTextColor;
         this.img_ = new Image();
         this.img_.src = imgPath;
 

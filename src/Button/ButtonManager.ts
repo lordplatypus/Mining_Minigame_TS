@@ -68,10 +68,10 @@ class ButtonManager
 
         for (var i = 0; i < this.buttons_.length; i++)
         {
-            if (mousePosition.x >= this.buttons_[i].Position.x && mousePosition.x <= this.buttons_[i].Position.x + this.buttons_[i].Size.x && 
-                mousePosition.y >= this.buttons_[i].Position.y && mousePosition.y <= this.buttons_[i].Position.y + this.buttons_[i].Size.y)
-                this.buttons_[i].Highlight = true;
-            else  this.buttons_[i].Highlight = false;
+            if (mousePosition.x >= this.buttons_[i].Position.x && mousePosition.x <= this.buttons_[i].Position.x + this.buttons_[i].SIZE.x && 
+                mousePosition.y >= this.buttons_[i].Position.y && mousePosition.y <= this.buttons_[i].Position.y + this.buttons_[i].SIZE.y)
+                this.buttons_[i].HIGHLIGHT = true;
+            else  this.buttons_[i].HIGHLIGHT = false;
         }
     }
 
@@ -79,7 +79,7 @@ class ButtonManager
     {
         for (var i = 0; i < this.buttons_.length; i++)
         {
-            if (this.buttons_[i].Highlight) this.buttons_[i].Pressed = 1;
+            if (this.buttons_[i].HIGHLIGHT) this.buttons_[i].PRESSED = 1;
         }
     }
 
@@ -88,12 +88,12 @@ class ButtonManager
         var selectedButton: number = -1;
         for (var i = 0; i < this.buttons_.length; i++)
         {
-            if (this.buttons_[i].Pressed === 1 && this.buttons_[i].Highlight) selectedButton = i;
-            this.buttons_[i].Pressed = 0;
+            if (this.buttons_[i].PRESSED === 1 && this.buttons_[i].HIGHLIGHT) selectedButton = i;
+            this.buttons_[i].PRESSED = 0;
         }
         //running the line below directly in the loop would cause "undefined" issues.
         //changing scene buttons would delete the list of buttons and then the loop would try to access the next button, resulting in an error.
-        if (selectedButton !== -1) this.buttons_[selectedButton].Effect();
+        if (selectedButton !== -1 && this.buttons_[selectedButton].ACTIVE === true) this.buttons_[selectedButton].Effect();
     }
 }
 
