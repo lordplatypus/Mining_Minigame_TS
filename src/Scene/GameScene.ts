@@ -13,6 +13,9 @@ import { Player } from "../GameObject/Player";
 import { Coin } from "../GameObject/Coin";
 import { TurnCounter } from "../GameObject/TurnCounter";
 import { RightPanel } from "../GameObject/RightPanel";
+import { ToolIcon } from "../GameObject/ToolIcon";
+import { Box } from "../GameObject/Box";
+import { MoneyPanel } from "../GameObject/MoneyPanel";
 //Butons
 import { ButtonManager } from "../Button/ButtonManager";
 import { TransitionButton } from "../Button/TransitionButton";
@@ -27,7 +30,8 @@ class GameScene implements Scene
     private pm_: ParticleManager;
     //Main Canvas
     private mainCanvas_: HTMLCanvasElement | null;
-    private canvasSize_: number; //width and height of the canvas (perfect square)
+    private canvasSize_: Vector; //width and height of the canvas
+    private mainColumns_: number;
     private mainRows_: number; //columns and rows of the main canvas (for scaling)
     private mainCellSize_: number; //width and height of a single mainGridSection
     //Grid Canvas
@@ -46,8 +50,9 @@ class GameScene implements Scene
         this.pm_ = new ParticleManager(this);
 
         this.mainCanvas_ = <HTMLCanvasElement>document.getElementById("main_canvas");
-        this.canvasSize_ = 0;
-        this.mainRows_ = 10; //one row = 10% of the screen
+        this.canvasSize_ = new Vector(0, 0);
+        this.mainColumns_ = 10;
+        this.mainRows_ = 11;
         this.mainCellSize_ = 0;
 
         this.gridCanvas_ = <HTMLCanvasElement>document.getElementById("grid_canvas");
@@ -66,14 +71,14 @@ class GameScene implements Scene
         this.bm_.Init();
 
         //calculate the size of a single cell in the main grid using the window size
-        if (window.innerWidth <= window.innerHeight) this.mainCellSize_ = Math.floor(window.innerWidth / this.mainRows_);
+        if (window.innerWidth <= window.innerHeight) this.mainCellSize_ = Math.floor(window.innerWidth / this.mainColumns_);
         else this.mainCellSize_ = Math.floor(window.innerHeight / this.mainRows_);
         //use the single cell size and the number of rows to calculate the main canvas size
-        this.canvasSize_ = this.mainRows_ * this.mainCellSize_;
+        this.canvasSize_ = new Vector(this.mainColumns_ * this.mainCellSize_, this.mainRows_ * this.mainCellSize_);
         if (this.mainCanvas_ !== null)
         {
-            this.mainCanvas_.width = this.canvasSize_;
-            this.mainCanvas_.height = this.canvasSize_;
+            this.mainCanvas_.width = this.canvasSize_.x;
+            this.mainCanvas_.height = this.canvasSize_.y;
         }
 
         //the grid canvas size is fixed to 32 x the number of grid rows (gets scaled to the main canvas later)
@@ -90,41 +95,49 @@ class GameScene implements Scene
 
 
         //PLAYER
-        this.Add(new Player(this, "Player", "Player", 0, new Vector(0, 0), this.game_.GetStats(),
-                            new Vector(this.mainCellSize_ * 8, this.mainCellSize_ * 8), this.gridRows_, this.mainCellSize_,this.mainRows_));
+        this.Add(new Player(this, "Player", "Player", 0, new Vector(0, 0), this.game_.GetStats(), new Vector(this.mainCellSize_ * 8, this.mainCellSize_ * 8), 
+                            this.gridRows_, this.mainCellSize_, this.mainColumns_, this.mainRows_));
  
 
 
         //FOR THE MAIN CANVAS
 
+        const maxTurns: number | undefined = this.game_.GetStats().GetStat("MaxTurns");
+        this.Add(new TurnCounter(this, "Counter", "Counter", 0, new Vector(0, 0), new Vector(this.mainCellSize_ * (this.mainColumns_ - 2), this.mainCellSize_ * 2), this.mainCellSize_, maxTurns === undefined ? 25 : maxTurns));
+        //Set up right panel
+        this.Add(new RightPanel("Right", "Panel", 0, new Vector(this.mainCellSize_ * (this.mainColumns_ - 2), 0), new Vector(this.mainCellSize_ * 2, this.mainCellSize_ * this.mainRows_), this.mainCellSize_, maxTurns === undefined ? 25 : maxTurns));
+        //this.Add(new Text("Text", "Text", 0, new Vector(this.mainCellSize_ * (this.mainRows_ - 2), this.mainCellSize_), 16, "Money: ", "" + this.game_.GetStats().GetStat("Money"), "serif", "#ff0000"));
+
+        //TEST
+        this.Add(new Box("Bottom_Panel", "Box", 0, new Vector(0, this.mainCellSize_ * 10), new Vector(this.mainCellSize_ * (this.mainColumns_ - 2), this.mainCellSize_), "#584840"));
+        this.Add(new MoneyPanel(this, this.game_.GetStats(), "MoneyPanel", "MoneyPanel", 0, new Vector(0, this.mainCellSize_ * 10), this.mainCellSize_));
+
         //Return Button
-        this.bm_.Add(new TransitionButton(this, "Transition", "Button", 0, new Vector(this.mainCellSize_ * (this.mainRows_ - 2), (this.mainCellSize_ * this.mainRows_) - this.mainCellSize_), 
+        this.bm_.Add(new TransitionButton(this, "Transition", "Button", 0, new Vector(this.mainCellSize_ * (this.mainColumns_ - 1.5), this.mainCellSize_ * (this.mainRows_ - 1.5)), 
                      new Vector(this.mainCellSize_, this.mainCellSize_), "./Button_Return.png", "Menu"));
 
         //Area <> buttons && text
-        const areaText: Text = new Text("Area_Text", "Text", 1, new Vector(this.mainCellSize_ * (this.mainRows_ - 2), this.mainCellSize_ * 3), 16, "Area: ", "" + this.game_.GetStats().GetStat("Area"), "serif", "#ff0000");
-        this.Add(areaText);
+        // const areaText: Text = new Text("Area_Text", "Text", 1, new Vector(this.mainCellSize_ * (this.mainRows_ - 2), this.mainCellSize_ * 3), 16, "Area: ", "" + this.game_.GetStats().GetStat("Area"), "serif", "#ff0000");
+        // this.Add(areaText);
+        this.Add(new ToolIcon(this, this.game_.GetStats(), "Hammer", "Icon", 0, new Vector(this.mainCellSize_ * (this.mainColumns_ - 1.5), this.mainCellSize_ * 3), this.mainCellSize_, "Area", "./Hammer_Icon.png"));
         const maxArea: number | undefined = this.game_.GetStats().GetStat("MaxArea");
-        this.bm_.Add(new UpdateStatButton(this.game_.GetStats(), "Stat", "Button", 0, new Vector(this.mainCellSize_ * (this.mainRows_ - 2), this.mainCellSize_ * 4), 
-                     new Vector(this.mainCellSize_ / 2, this.mainCellSize_ / 2), "./Button_Red.png", "Area", -1, 0, maxArea === undefined ? 0 : maxArea, areaText));
-        this.bm_.Add(new UpdateStatButton(this.game_.GetStats(), "Stat", "Button", 0, new Vector(this.mainCellSize_ * (this.mainRows_ - 1), this.mainCellSize_ * 4), 
-                     new Vector(this.mainCellSize_ / 2, this.mainCellSize_ / 2), "./Button_Blue.png", "Area", 1, 0, maxArea === undefined ? 0 : maxArea, areaText));
+        this.bm_.Add(new UpdateStatButton(this.game_.GetStats(), "Stat", "Button", 0, new Vector(this.mainCellSize_ * (this.mainColumns_ - 1.5), this.mainCellSize_ * 4), 
+                     new Vector(this.mainCellSize_ / 2, this.mainCellSize_ / 2), "./Button_Red.png", "Area", -1, 0, maxArea === undefined ? 0 : maxArea));
+        this.bm_.Add(new UpdateStatButton(this.game_.GetStats(), "Stat", "Button", 0, new Vector(this.mainCellSize_ * (this.mainColumns_ - 1), this.mainCellSize_ * 4), 
+                     new Vector(this.mainCellSize_ / 2, this.mainCellSize_ / 2), "./Button_Blue.png", "Area", 1, 0, maxArea === undefined ? 0 : maxArea));
 
         //Power <> buttons && text
-        const powerText: Text = new Text("Power_Text", "Text", 2, new Vector(this.mainCellSize_ * (this.mainRows_ - 2), this.mainCellSize_ * 5), 16, "Power: ", "" + this.game_.GetStats().GetStat("Power"), "serif", "#ff0000");
-        this.Add(powerText);
+        // const powerText: Text = new Text("Power_Text", "Text", 2, new Vector(this.mainCellSize_ * (this.mainRows_ - 2), this.mainCellSize_ * 5), 16, "Power: ", "" + this.game_.GetStats().GetStat("Power"), "serif", "#ff0000");
+        // this.Add(powerText);
+        this.Add(new ToolIcon(this, this.game_.GetStats(), "Pickaxe", "Icon", 0, new Vector(this.mainCellSize_ * (this.mainColumns_ - 1.5), this.mainCellSize_ * 6), this.mainCellSize_, "Power", "./Pickaxe_Icon.png"));
         const maxPower: number | undefined = this.game_.GetStats().GetStat("MaxPower");
-        this.bm_.Add(new UpdateStatButton(this.game_.GetStats(), "Stat", "Button", 0, new Vector(this.mainCellSize_ * (this.mainRows_ - 2), this.mainCellSize_ * 6), 
-                                          new Vector(this.mainCellSize_ / 2, this.mainCellSize_ / 2), "./Button_Red.png", "Power", -1, 1, maxPower === undefined ? 0 : maxPower, powerText));
-        this.bm_.Add(new UpdateStatButton(this.game_.GetStats(), "Stat", "Button", 0, new Vector(this.mainCellSize_ * (this.mainRows_ - 1), this.mainCellSize_ * 6), 
-                                          new Vector(this.mainCellSize_ / 2, this.mainCellSize_ / 2), "./Button_Blue.png", "Power", 1, 1, maxPower === undefined ? 0 : maxPower, powerText));
+        this.bm_.Add(new UpdateStatButton(this.game_.GetStats(), "Stat", "Button", 0, new Vector(this.mainCellSize_ * (this.mainColumns_ - 1.5), this.mainCellSize_ * 7), 
+                                          new Vector(this.mainCellSize_ / 2, this.mainCellSize_ / 2), "./Button_Red.png", "Power", -1, 1, maxPower === undefined ? 0 : maxPower));
+        this.bm_.Add(new UpdateStatButton(this.game_.GetStats(), "Stat", "Button", 0, new Vector(this.mainCellSize_ * (this.mainColumns_ - 1), this.mainCellSize_ * 7), 
+                                          new Vector(this.mainCellSize_ / 2, this.mainCellSize_ / 2), "./Button_Blue.png", "Power", 1, 1, maxPower === undefined ? 0 : maxPower));
 
         
-        const maxTurns: number | undefined = this.game_.GetStats().GetStat("MaxTurns");
-        this.Add(new TurnCounter(this, "Counter", "Counter", 0, new Vector(0, 0), new Vector(this.mainCellSize_ * (this.mainRows_ - 2), this.mainCellSize_ * 2), this.mainCellSize_, maxTurns === undefined ? 25 : maxTurns));
-        //Set up right panel
-        this.Add(new RightPanel("Right", "Panel", 0, new Vector(this.mainCellSize_ * (this.mainRows_ - 2), 0), new Vector(this.mainCellSize_ * 2, this.mainCellSize_ * this.mainRows_), this.mainCellSize_, maxTurns === undefined ? 25 : maxTurns));
-        this.Add(new Text("Text", "Text", 0, new Vector(this.mainCellSize_ * (this.mainRows_ - 2), this.mainCellSize_), 16, "Money: ", "" + this.game_.GetStats().GetStat("Money"), "serif", "#ff0000"));
+        
     }
     
     public Update(delta_time: number) 

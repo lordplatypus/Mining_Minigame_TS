@@ -2,7 +2,10 @@ import { Scene } from "./Scene";
 import { Game } from "../Game";
 import { GameobjectManager } from "../GameObject/GameobjectManager";
 import { Vector } from "../Vector";
+//GameObjects
 import { Gameobject } from "../GameObject/Gameobject";
+import { Text } from "../GameObject/Text";
+import { MoneyPanel } from "../GameObject/MoneyPanel";
 //Butons
 import { ButtonManager } from "../Button/ButtonManager";
 import { TransitionButton } from "../Button/TransitionButton";
@@ -72,12 +75,23 @@ class ShopScene implements Scene
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
+        //TEXT SETUP
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        //const areaText: Text = new Text("Area", "Text", 0, new Vector(this.gridSize_ * 2, this.gridSize_ * 2), 16, "Area")
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
         //BUTTON SETUP
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         this.bm_.Init();
-        this.bm_.Add(new TransitionButton(this, "Transition", "Button", 0, new Vector(0, 0), new Vector(this.gridSize_, this.gridSize_), "./Button_Return.png", "Menu"));
-        this.bm_.Add(new BuyButton(this.game_.GetStats(), "MaxPower", "Button", 1, new Vector(0, this.gridSize_ * 2), new Vector(this.gridSize_, this.gridSize_), "./Button_Brown.png", "MaxPower", 1, 1));
-        this.bm_.Add(new BuyButton(this.game_.GetStats(), "MaxTurns", "Button", 2, new Vector(0, this.gridSize_ * 4), new Vector(this.gridSize_, this.gridSize_), "./Button_Brown.png", "MaxTurns", 1, 1));
+        this.bm_.Add(new TransitionButton(this, "Transition", "Button", 0, new Vector(this.gridSize_ * 9, 0), new Vector(this.gridSize_, this.gridSize_), "./Button_Return.png", "Menu"));
+        this.bm_.Add(new BuyButton(this.game_.GetStats(), "MaxArea", "Button", 1, new Vector(0, this.gridSize_ * 2), new Vector(this.gridSize_, this.gridSize_), "./Button_Brown.png", "MaxArea", 1, 1));
+        this.bm_.Add(new BuyButton(this.game_.GetStats(), "MaxPower", "Button", 2, new Vector(0, this.gridSize_ * 4), new Vector(this.gridSize_, this.gridSize_), "./Button_Brown.png", "MaxPower", 1, 1));
+        this.bm_.Add(new BuyButton(this.game_.GetStats(), "MaxTurns", "Button", 3, new Vector(0, this.gridSize_ * 6), new Vector(this.gridSize_, this.gridSize_), "./Button_Brown.png", "MaxTurns", 1, 1));
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        //GAMEOBJECT SETUP
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        this.Add(new MoneyPanel(this, this.game_.GetStats(), "MoneyPanel", "MoneyPanel", 0, new Vector(0, 0), this.gridSize_));
     }
     
     public Update(delta_time: number) 

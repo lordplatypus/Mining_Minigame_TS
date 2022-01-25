@@ -6,6 +6,8 @@ import { Gameobject } from "../GameObject/Gameobject";
 //Butons
 import { ButtonManager } from "../Button/ButtonManager";
 import { TransitionButton } from "../Button/TransitionButton";
+//TEST
+import { MoneyPanel } from "../GameObject/MoneyPanel";
 
 class MenuScene implements Scene
 {
@@ -76,6 +78,9 @@ class MenuScene implements Scene
         this.bm_.Init();
         this.bm_.Add(new TransitionButton(this, "Transition", "Button", 0, new Vector(this.gridSize_ * 4, this.gridSize_ * 3), new Vector(this.gridSize_, this.gridSize_), "./Button_Pickaxe.png", "LevelSelect"));
         this.bm_.Add(new TransitionButton(this, "Transition", "Button", 1, new Vector(this.gridSize_ * 4, this.gridSize_ * 5), new Vector(this.gridSize_, this.gridSize_), "./Button_Coin.png", "Shop"));
+    
+        //TEST
+        this.Add(new MoneyPanel(this, this.game_.GetStats(), "MoneyPanel", "MoneyPanel", 0, new Vector(0, 0), this.gridSize_));
     }
     
     public Update(delta_time: number) 

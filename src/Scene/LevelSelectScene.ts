@@ -6,6 +6,7 @@ import { ParticleManager } from "../Particles/ParticleManager";
 //GameObjects
 import { Gameobject } from "../GameObject/Gameobject";
 import { Text } from "../GameObject/Text";
+import { MoneyPanel } from "../GameObject/MoneyPanel";
 //Butons
 import { ButtonManager } from "../Button/ButtonManager";
 import { TransitionButton } from "../Button/TransitionButton";
@@ -89,7 +90,7 @@ class LevelSelectScene implements Scene
         //Transition
         //this.bm_.Add(new TransitionButton(this, "Transition", "Button", 0, new Vector(this.gridSize_ * 4, this.gridSize_ * 5), new Vector(this.gridSize_, this.gridSize_), "./Button_Pickaxe.png", "Game", cost, this.game_.GetStats()));
         this.bm_.Add(new LevelSelectButton(this, this.game_.GetStats(), "Transition", "Button", 0, new Vector(this.gridSize_ * 4, this.gridSize_ * 5), new Vector(this.gridSize_, this.gridSize_), "./Button_Pickaxe.png", "Game"));
-        this.bm_.Add(new TransitionButton(this, "Transition", "Button", 0, new Vector(0, 0), new Vector(this.gridSize_, this.gridSize_), "./Button_Return.png", "Menu"));
+        this.bm_.Add(new TransitionButton(this, "Transition", "Button", 0, new Vector(this.gridSize_ * 8, 0), new Vector(this.gridSize_, this.gridSize_), "./Button_Return.png", "Menu"));
         //Update Stat buttons
         const levelText: Text = new Text("Level_Text", "Text", 0, new Vector(this.gridSize_ * 3, this.gridSize_ * 3), 16, "Level: ", "" + currentRows, "serif", "#ff0000");
         this.Add(levelText);
@@ -103,6 +104,11 @@ class LevelSelectScene implements Scene
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         this.levelCostText_ = new Text("Level_Cost_Text", "Text", 1, new Vector(this.gridSize_ * 5, this.gridSize_ * 3), 16, "Cost: ", "" + cost, "serif", "#ff0000");
         this.Add(this.levelCostText_);
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        //GAMEOBJECT SETUP
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        this.Add(new MoneyPanel(this, this.game_.GetStats(), "MoneyPanel", "MoneyPanel", 0, new Vector(0, 0), this.gridSize_));
     }
     
     public Update(delta_time: number) 

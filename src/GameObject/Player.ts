@@ -12,6 +12,7 @@ class Player extends Gameobject
     private scene_: GameScene;
     private stats_: Stats;
     private mainCellSize_: number;
+    private mainColumns_: number;
     private mainRows_: number;
     private gridCellSize_: number;
     private gridRows_: number;
@@ -21,7 +22,7 @@ class Player extends Gameobject
     private pm_: ParticleManager;
 
     constructor(scene: GameScene, name: string, tag: string, ID: number, position: Vector, stats: Stats, 
-                playAreaSize: Vector, gridRows: number, mainCellSize: number, mainRows: number)
+                playAreaSize: Vector, gridRows: number, mainCellSize: number, mainColumns: number, mainRows: number)
     {
         super();
         this.scene_ = scene;
@@ -35,7 +36,8 @@ class Player extends Gameobject
         this.stats_ = stats;
         this.gridRows_ = gridRows; //num of rows (and columns) of the play area grid
         this.gridCellSize_ = this.width_ / this.gridRows_; //world size of a single cell in the play area grid
-        this.mainRows_ = mainRows; //num of rows (and columns) of the main grid
+        this.mainColumns_ = mainColumns; //num of columns of the main grid
+        this.mainRows_ = mainRows; //num of rows of the main grid
         this.mainCellSize_ = mainCellSize; //world size of a single cell in the main grid
 
         this.canvas_ = <HTMLCanvasElement>document.getElementById("main_canvas");
@@ -79,8 +81,8 @@ class Player extends Gameobject
         var mouseX: number = event.clientX - rectangle.left;
         var mouseY: number = event.clientY - rectangle.top;
 
-        if (mouseX >= 0 && mouseX <= this.mainCellSize_ * (this.mainRows_ - 2) &&
-            mouseY >= this.mainCellSize_ * 2 && mouseY <= this.mainRows_ * this.mainCellSize_)
+        if (mouseX >= 0 && mouseX <= this.mainCellSize_ * (this.mainColumns_ - 2) &&
+            mouseY >= this.mainCellSize_ * 2 && mouseY <= this.mainCellSize_ * (this.mainRows_ - 1))
         {//clicked within the game field
             this.pm_.Debris(new Vector(mouseX, mouseY));
 

@@ -27,9 +27,11 @@ class Stats
         console.log("Set stat: " + statName + ". With value: " + value);
     }
 
-    public GetStat(statName: string) : number | undefined
+    public GetStat(statName: string) : number
     {
-        return this.stats_.get(statName);
+        var stat: number | undefined = this.stats_.get(statName);
+        if (stat === undefined) return -1;
+        else return stat; 
     }
 }
 
