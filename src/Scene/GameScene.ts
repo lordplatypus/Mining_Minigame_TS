@@ -16,6 +16,8 @@ import { RightPanel } from "../GameObject/RightPanel";
 import { ToolIcon } from "../GameObject/ToolIcon";
 import { Box } from "../GameObject/Box";
 import { MoneyPanel } from "../GameObject/MoneyPanel";
+//Treasure
+import { TreasureManager } from "../Treasure/TreasureManager";
 //Butons
 import { ButtonManager } from "../Button/ButtonManager";
 import { TransitionButton } from "../Button/TransitionButton";
@@ -220,36 +222,37 @@ class GameScene implements Scene
 
     private Treasure()
     {
+        const tm: TreasureManager = new TreasureManager(this, this.game_.GetStats(), this.gridCellSize_, this.mainCellSize_, this.mainRows_, this.mainColumns_);
+
         //every 5 rows add a potential of 5 treasure + a garentee of 2 treasure per 5 rows
         //example: 15 rows -> min treasure = 6 / max treasure = 21
-        var numOfTreasure: number = Math.floor(Math.random() * ((this.gridRows_ / 5) * 5) + 1) + (this.gridRows_ / 5) * 2;
-        var occupied: Vector[] = []; //stores positions that already have money
-        for (var i = 0; i < numOfTreasure; i++)
-        {
-            var done: boolean = false; 
-            var x: number = 0;
-            var y: number = 0;
-            while (!done)
-            {
-                done = true;
-                x = Math.floor(Math.random() * (this.gridRows_));
-                y = Math.floor(Math.random() * (this.gridRows_ ));
-                for (var j = 0; j < occupied.length; j++)
-                {//if the rand position was already used try again
-                    if (x === occupied[j].x && y === occupied[j].y) done = false;
-                }
-            }
-            const treasureID: number = this.calcs_.ConvertLocalToID(new Vector(x, y), this.gridRows_, this.gridRows_);
-            this.Add(new Coin(this.game_.GetStats(), this, "Coin", "Coin", treasureID, new Vector(this.gridCellSize_*x, this.gridCellSize_*y), new Vector(this.gridCellSize_, this.gridCellSize_), this.mainCellSize_, this.gridCellSize_, this.gridRows_, this.gridRows_));
-            occupied.push(new Vector(x, y));
-            console.log(x);
-            console.log(y);
-            console.log(treasureID);
-        }
+        // var numOfTreasure: number = Math.floor(Math.random() * ((this.gridRows_ / 5) * 5) + 1) + (this.gridRows_ / 5) * 2;
+        // var occupied: Vector[] = []; //stores positions that already have money
+        // const tm: TreasureManager = new TreasureManager();
+        // for (var i = 0; i < numOfTreasure; i++)
+        // {
+        //     var done: boolean = false; 
+        //     var x: number = 0;
+        //     var y: number = 0;
+        //     while (!done)
+        //     {
+        //         done = true;
+        //         x = Math.floor(Math.random() * (this.gridRows_));
+        //         y = Math.floor(Math.random() * (this.gridRows_ ));
+        //         for (var j = 0; j < occupied.length; j++)
+        //         {//if the rand position was already used try again
+        //             if (x === occupied[j].x && y === occupied[j].y) done = false;
+        //         }
+        //     }
+        //     const treasureID: number = this.calcs_.ConvertLocalToID(new Vector(x, y), this.gridRows_, this.gridRows_);
+        //     //this.Add(new Coin(this.game_.GetStats(), this, "Coin", "Coin", treasureID, new Vector(this.gridCellSize_*x, this.gridCellSize_*y), new Vector(this.gridCellSize_, this.gridCellSize_), this.mainCellSize_, this.gridCellSize_, this.gridRows_, this.gridRows_));
+        //     tm.BronzeCoin(this, this.game_.GetStats(), treasureID, new Vector(this.gridCellSize_*x, this.gridCellSize_*y), this.gridCellSize_, this.mainCellSize_, this.gridRows_, this.gridRows_);
+        //     occupied.push(new Vector(x, y));
+        // }
 
         //this.Add(new FadingText("Fading", "Text", 0, new Vector(0, this.gridCellSize_), 32, numOfTreasure + " Treasures", "#ff0000"));
-        if (this.mainCanvas_ === null) return
-        this.pm_.FadingText(new Vector(this.mainCanvas_.width / 2, this.mainCanvas_.height / 2), numOfTreasure + " Treasures", this.mainCellSize_);
+        // if (this.mainCanvas_ === null) return
+        // this.pm_.FadingText(new Vector(this.mainCanvas_.width / 2, this.mainCanvas_.height / 2), numOfTreasure + " Treasures", this.mainCellSize_);
     }
 
     private Dirt()
